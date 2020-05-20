@@ -1,8 +1,8 @@
-package com.hulhul.server.domain.user;
+package com.hulhul.server.domain.post;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepo extends JpaRepository<User, Long> {
+public interface PostRepo extends JpaRepository<Post, Long> {
 	// c : create
 	// r : read
 	// u : update

@@ -14,32 +14,41 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.hulhul.server.domain.post.Post;
+import com.hulhul.server.domain.post.PostRepo;
 import com.hulhul.server.domain.user.User;
 import com.hulhul.server.domain.user.UserRepo;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class UserTest {
+public class PostTest {
 
 	@Autowired
-	UserRepo userRepo;
+	PostRepo postRepo;
 
 	@Test
-	public void 유저_저장_불러오기() {
+	public void 포스트_저장_불러오기() {
 		// set
 		String email = "test1";
 		String password = "test1";
 		String nickname = "test1";
 
-		// given
-		userRepo.save(User.builder().email(email).password(password).nickname(nickname).build());
+		// set
+		String title = "123";
+		boolean isPrivated = true;
+		boolean isSolved = false;
+		User user = new User(email, password, nickname);
+
+		// givien
+//		PostRepo.save(Post.builder().title(title).is_privated(isPrivated).is_solved(isSolved).build());
 
 		// when
-		List<User> userList = userRepo.findAll();
+		List<Post> postList = postRepo.findAll();
+
 		// then
-		User user = userList.get(0);
-		assertThat(user.getEmail(), is(email));
-		assertThat(user.getPassword(), is(password));
+		Post post = postList.get(0);
+		assertThat(post.getTitle(), is(title));
+		assertThat(post.is_privated(), is(isPrivated));
 	}
 }
