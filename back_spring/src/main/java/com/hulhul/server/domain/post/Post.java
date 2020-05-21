@@ -4,18 +4,22 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.hulhul.server.domain.category.Category;
 import com.hulhul.server.domain.conversation.Conversation;
 import com.hulhul.server.domain.time.TimeEntity;
 import com.hulhul.server.domain.user.User;
@@ -37,7 +41,6 @@ public class Post extends TimeEntity {
 	@Column(length = 500, nullable = false)
 	private String title;
 
-	private boolean is_privated; // 공개여부
 	private boolean is_solved; // 해결여부
 
 	// N : 1 post -> user
@@ -47,13 +50,17 @@ public class Post extends TimeEntity {
 
 	// 1 : N post <- Conversation
 	// 순서 있어야함
-//	@OneToMany(mappedBy = "Post")
-//	private List<Conversation> converstations = new ArrayList<>();
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "Posts")
+	private List<Conversation> converstations = new ArrayList<>();
+
+	// 1 : 1 Category - Post
+	@OneToOne
+	@JoinColumn(name = "category_id", nullable = false)
+	private Category category;
 
 	@Builder
-	public Post(String title, boolean is_privated, boolean is_solved, User user) {
+	public Post(String title, boolean is_solved, User user) {
 		this.title = title;
-		this.is_privated = is_privated;
 		this.is_solved = is_solved;
 		this.user = user;
 	}

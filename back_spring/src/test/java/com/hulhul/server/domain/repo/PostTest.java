@@ -49,6 +49,6 @@ public class PostTest {
 		// then
 		Post post = postList.get(0);
 		assertThat(post.getTitle(), is(title));
-		assertThat(post.is_privated(), is(isPrivated));
+		assertThat(post.is_solved(), is(isSolved));
 	}
 }

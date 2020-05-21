@@ -30,7 +30,7 @@ public class User extends TimeEntity {
 	private String nickname;
 	private int score;
 	private boolean is_email;
-	
+
 	@Builder
 	public User(String email, String password, String nickname) {
 		this.email = email;
