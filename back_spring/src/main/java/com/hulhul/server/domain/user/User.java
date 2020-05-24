@@ -15,6 +15,7 @@ import com.hulhul.server.domain.conversation.Conversation;
 import com.hulhul.server.domain.post.Post;
 import com.hulhul.server.domain.time.TimeEntity;
 
+import junit.framework.Assert;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

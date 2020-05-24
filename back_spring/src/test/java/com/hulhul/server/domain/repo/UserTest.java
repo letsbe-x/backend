@@ -1,6 +1,7 @@
 package com.hulhul.server.domain.repo;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.List;
@@ -26,6 +27,11 @@ public class UserTest {
 
 	@Autowired
 	UserRepo userRepo;
+	
+	@Test
+	public void DI_테스트() {
+		assertThat(userRepo, is(nullValue()));
+	}
 
 	//TODO : 더미데이터 추가하는법 찾아볼것
 	@Before(value = "")
