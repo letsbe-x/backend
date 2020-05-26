@@ -1,9 +1,8 @@
 package com.hulhul.server.domain.repo;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-
-import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -14,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.hulhul.server.domain.category.Category;
+import com.hulhul.server.domain.category.CategoryRepo;
 import com.hulhul.server.domain.post.Post;
 import com.hulhul.server.domain.post.PostRepo;
 import com.hulhul.server.domain.user.User;
@@ -21,34 +22,57 @@ import com.hulhul.server.domain.user.UserRepo;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Transactional
+//@Transactional
 public class PostTest {
+
+	@Autowired
+	CategoryRepo categoryRepo;
+
+	@Autowired
+	UserRepo userRepo;
 
 	@Autowired
 	PostRepo postRepo;
 
+//	@After
+//	public void cleanup() {
+//		postRepo.deleteAll();
+//	}
+
+	@Test
+	public void DI_테스트() {
+		assertThat(postRepo, is(notNullValue()));
+	}
+
 	@Test
 	public void 포스트_저장_불러오기() {
-		// set
-		String email = "test1";
+		// Userset
+		String email = "test1@test.com";
 		String password = "test1";
 		String nickname = "test1";
-
-		// set
-		String title = "123";
-		boolean isPrivated = true;
-		boolean isSolved = false;
 		User user = new User(email, password, nickname);
 
+		// CategorySet
+		String categoryName = "고민";
+		Category category = new Category(categoryName);
+
+		// Postset
+		String title = "123";
+//		PostStatus status = PostStatus.PROCEED;
+		Post post = Post.builder().title(title).category(category).user(user).build();
+
 		// givien
-//		PostRepo.save(Post.builder().title(title).is_privated(isPrivated).is_solved(isSolved).build());
+		Long id = postRepo.save(post).getId();
 
 		// when
-		List<Post> postList = postRepo.findAll();
+		User checkUser = userRepo.findByEmail(email);
+		Category checkCategory = categoryRepo.findByName(categoryName);
+		Post checkPost = postRepo.findById(id).get();
 
 		// then
-		Post post = postList.get(0);
-		assertThat(post.getTitle(), is(title));
-		assertThat(post.is_solved(), is(isSolved));
+		assertThat(checkUser.getEmail(), is(email));
+		assertThat(checkCategory.getName(), is(categoryName));
+		assertThat(checkPost.getTitle(), is(title));
 	}
+
 }

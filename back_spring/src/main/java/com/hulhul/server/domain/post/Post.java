@@ -1,12 +1,13 @@
 package com.hulhul.server.domain.post;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,8 +17,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.hulhul.server.domain.category.Category;
 import com.hulhul.server.domain.conversation.Conversation;
@@ -29,6 +28,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
+//@Setter //Entity 클래스에서는 절대 Setter 메소드를 만들지 않는다. (자바빈 인스턴스 값 변경때문에라도...)
 @RequiredArgsConstructor
 @Entity
 @Table(name = "Posts")
@@ -36,32 +36,56 @@ public class Post extends TimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // Entity PK (auto_increment) : GenerationType.IDENTITY)
+	@Column(name = "p_id")
 	private Long id;
+
+	// N : 1  post -> user
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "u_id", nullable = false, updatable = false)
+	private User user; // 작성자
+
+	// 1 : N post <- Conversation
+	// 순서 있어야함
+	// ToMany는 default가 지연로딩이므로 설정 안해도 된다.
+	// CascadeType.. persist에서 영속성 관련부분 - 참조 객체 !주의
+	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+	private List<Conversation> converstationList = new ArrayList<>();
+
+	// N : 1 Post -> Category
+	// CascadeType.. persist에서 영속성 관련부분 - 참조 객체 !주의
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "ca_id", nullable = false) // 단방향
+	private Category category;
 
 	@Column(length = 500, nullable = false)
 	private String title;
 
-	private boolean is_solved; // 해결여부
+//	@Enumerated(EnumType.STRING)
+//	private PostStatus status; // POST 상태
 
-	// N : 1 post -> user
-	@ManyToOne
-	@JoinColumn(name = "user_id", nullable = false, updatable = false)
-	private User user;
+	// 연관관계 메서드
+//	public void addConversation(Conversation conversation) {
+//		converstationList.add(conversation);
+//		conversation.setPost(this);
+//	}
 
-	// 1 : N post <- Conversation
-	// 순서 있어야함
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "Posts")
-	private List<Conversation> converstations = new ArrayList<>();
-
-	// 1 : 1 Category - Post
-	@OneToOne
-	@JoinColumn(name = "category_id", nullable = false)
-	private Category category;
+	public void setCategory(Category category) {
+		this.category = category;
+		category.changePost(this);
+	}
 
 	@Builder
-	public Post(String title, boolean is_solved, User user) {
+	public Post(String title, User user, Category category) {
 		this.title = title;
-		this.is_solved = is_solved;
 		this.user = user;
+		this.setCategory(category);
 	}
+
+	// Test용 Lombok toString은 양방향 매핑때문에 무한루프 늪에 빠지더라..
+	@Override
+	public String toString() {
+		return "Post [id=" + id + ", user=" + user + ", converstationList=" + converstationList + ", category="
+				+ category + ", title=" + title + "]";
+	}
+
 }

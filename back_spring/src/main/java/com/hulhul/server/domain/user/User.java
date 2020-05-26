@@ -59,6 +59,10 @@ public class User extends TimeEntity {
 		this.is_email = false;
 	}
 
+	public void changePost(Post post) {
+		this.posts.add(post);
+	}
+	
 	public boolean matchId(Long id) {
 		return this.id == id;
 	}
@@ -75,4 +79,6 @@ public class User extends TimeEntity {
 		this.password = updateUser.password;
 		this.nickname = updateUser.nickname;
 	}
+
+	// TODO : 이메일 확인 추가
 }
