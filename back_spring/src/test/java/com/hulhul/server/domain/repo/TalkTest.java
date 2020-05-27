@@ -4,9 +4,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-import javax.transaction.Transactional;
-
-import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +14,15 @@ import com.hulhul.server.domain.category.Category;
 import com.hulhul.server.domain.category.CategoryRepo;
 import com.hulhul.server.domain.post.Post;
 import com.hulhul.server.domain.post.PostRepo;
+import com.hulhul.server.domain.talk.Talk;
+import com.hulhul.server.domain.talk.TalkRepo;
 import com.hulhul.server.domain.user.User;
 import com.hulhul.server.domain.user.UserRepo;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Transactional
-public class PostTest {
+//@Transactional
+public class TalkTest {
 
 	@Autowired
 	CategoryRepo categoryRepo;
@@ -34,47 +33,50 @@ public class PostTest {
 	@Autowired
 	PostRepo postRepo;
 
-//	@After
-//	public void cleanup() {
-//		postRepo.deleteAll();
-//	}
+	@Autowired
+	TalkRepo talkRepo;
 
 	@Test
 	public void DI_테스트() {
 		assertThat(postRepo, is(notNullValue()));
 		assertThat(userRepo, is(notNullValue()));
 		assertThat(categoryRepo, is(notNullValue()));
+		assertThat(talkRepo, is(notNullValue()));
 	}
-
+	
 	@Test
-	public void 포스트_저장_불러오기() {
+	public void 대화_저장_불러오기() {
 		// Userset
 		String email = "test1@test.com";
 		String password = "test1";
 		String nickname = "test1";
-		User user = new User(email, password, nickname);
-
+		User user = User.builder().email(email).password(password).nickname(nickname).build();
+		
+		//LAZY 문제;;; User가 안만들어졌네;;!
+		
 		// CategorySet
 		String categoryName = "고민";
-		Category category = new Category(categoryName);
+		Category category = Category.builder().name(categoryName).build();
 
-		// Postset
+		// PostSet
 		String title = "123";
 //		PostStatus status = PostStatus.PROCEED;
 		Post post = Post.builder().title(title).category(category).user(user).build();
 
+		// TalkSet
+		String content = "content";
+		Talk talk = Talk.builder().content(content).user(user).post(post).build();
+
 		// givien
-		Long id = postRepo.save(post).getId();
+		Long id = talkRepo.save(talk).getId();
 
 		// when
-		User checkUser = userRepo.findByEmail(email);
-		Category checkCategory = categoryRepo.findByName(categoryName);
-		Post checkPost = postRepo.findById(id).get();
+		Talk checkTalk = talkRepo.findById(id).get();
 
 		// then
-		assertThat(checkUser.getEmail(), is(email));
-		assertThat(checkCategory.getName(), is(categoryName));
-		assertThat(checkPost.getTitle(), is(title));
+		assertThat(checkTalk.getContent(), is(content));
+		assertThat(checkTalk.getUser().getEmail(), is(email));
+		assertThat(checkTalk.getPost().getTitle(), is(title));
 	}
 
 }

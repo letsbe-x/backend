@@ -1,10 +1,8 @@
-package com.hulhul.server.domain.conversation;
+package com.hulhul.server.domain.talk;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.hulhul.server.domain.user.User;
-
-public interface ConversationRepo extends JpaRepository<Conversation, Long> {
+public interface TalkRepo extends JpaRepository<Talk, Long> {
 	// c : create
 	// r : read
 	// u : update

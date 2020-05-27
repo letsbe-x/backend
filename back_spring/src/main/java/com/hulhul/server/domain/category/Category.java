@@ -15,10 +15,13 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hulhul.server.domain.post.Post;
+import com.hulhul.server.domain.user.User;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -27,7 +30,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@Table(name = "Category")
+@Table(name = "Categories", uniqueConstraints = @UniqueConstraint(columnNames = { "name" }))
 public class Category {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,12 +44,13 @@ public class Category {
 	@OneToMany(mappedBy = "category")
 	private List<Post> posts = new ArrayList<Post>();
 
-	public Category(String categoryName) {
-		this.name = categoryName;
-	}
-
 	public void changePost(Post post) {
 		this.posts.add(post);
+	}
+
+	@Builder
+	public Category(String name) {
+		this.name = name;
 	}
 
 	// Test용 Lombok toString은 양방향 매핑때문에 무한루프 늪에 빠지더라..

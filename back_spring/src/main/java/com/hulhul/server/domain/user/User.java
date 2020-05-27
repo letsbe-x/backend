@@ -10,12 +10,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
-import com.hulhul.server.domain.conversation.Conversation;
 import com.hulhul.server.domain.post.Post;
+import com.hulhul.server.domain.talk.Talk;
 import com.hulhul.server.domain.time.TimeEntity;
 
-import junit.framework.Assert;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ import lombok.Setter;
 @Setter
 @RequiredArgsConstructor
 @Entity
-@Table(name = "Users")
+@Table(name = "Users", uniqueConstraints = @UniqueConstraint(columnNames = { "email", "nickname" }))
 public class User extends TimeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // Entity PK (auto_increment) : GenerationType.IDENTITY)
@@ -46,7 +46,7 @@ public class User extends TimeEntity {
 	// ToMany default Value = Fetch.LAZY
 	// 1:N
 	@OneToMany(mappedBy = "user")
-	private List<Conversation> converstations = new ArrayList<>();
+	private List<Talk> talkList = new ArrayList<>();
 
 	private int score;
 
@@ -62,7 +62,7 @@ public class User extends TimeEntity {
 	public void changePost(Post post) {
 		this.posts.add(post);
 	}
-	
+
 	public boolean matchId(Long id) {
 		return this.id == id;
 	}

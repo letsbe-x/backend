@@ -1,8 +1,8 @@
 package com.hulhul.server.domain.category;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
 
-import com.hulhul.server.domain.user.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CategoryRepo extends JpaRepository<Category, Long> {
 	// c : create
@@ -12,5 +12,4 @@ public interface CategoryRepo extends JpaRepository<Category, Long> {
 	// repository : 저장소
 	// <T, ID> : <타입, pk 자료형>
 	public Category findByName(String name);
-
 }

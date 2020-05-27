@@ -19,7 +19,7 @@ import com.hulhul.server.domain.user.UserRepo;
 import com.hulhul.server.web.util.HttpSessionUtils;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/v1/user")
 public class UserController {
 
 	//TODO : Spring Security로 변경
