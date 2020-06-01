@@ -44,7 +44,7 @@ public class TalkTest {
 		assertThat(talkRepo, is(notNullValue()));
 	}
 	
-	@Test
+//	@Test
 	public void 대화_저장_불러오기() {
 		// Userset
 		String email = "test1@test.com";
@@ -52,31 +52,77 @@ public class TalkTest {
 		String nickname = "test1";
 		User user = User.builder().email(email).password(password).nickname(nickname).build();
 		
-		//LAZY 문제;;; User가 안만들어졌네;;!
-		
 		// CategorySet
 		String categoryName = "고민";
 		Category category = Category.builder().name(categoryName).build();
 
 		// PostSet
-		String title = "123";
+		String title = "고민 타이틀";
+		String contents = "고민내용";
 //		PostStatus status = PostStatus.PROCEED;
-		Post post = Post.builder().title(title).category(category).user(user).build();
+		Post post = Post.builder().title(title).contents(contents).user(user).build();
 
 		// TalkSet
 		String content = "content";
-		Talk talk = Talk.builder().content(content).user(user).post(post).build();
-
+		Talk talk = Talk.builder().contents(content).user(user).post(post).build();
+		
 		// givien
 		Long id = talkRepo.save(talk).getId();
 
+		//TalkSet2
+		post = talkRepo.findById(id).get().getPost();
+		user = talkRepo.findById(id).get().getUser();
+		Talk talk2 = Talk.builder().contents(content).user(user).post(post).build();
+		Talk talk3 = Talk.builder().contents(content).user(user).post(post).build();
+
+		
+		// given 2
+		talkRepo.save(talk2);
+		talkRepo.save(talk3);
+		
 		// when
 		Talk checkTalk = talkRepo.findById(id).get();
 
 		// then
-		assertThat(checkTalk.getContent(), is(content));
+		assertThat(checkTalk.getContents(), is(content));
 		assertThat(checkTalk.getUser().getEmail(), is(email));
 		assertThat(checkTalk.getPost().getTitle(), is(title));
+	}
+	
+	@Test
+	public void 대화_저장_불러오기2() {
+		// Userset
+		User user = userRepo.findById(1L).get();
+		
+		// CategorySet
+		Category category = categoryRepo.findById(1L).get();
+
+		// PostSet
+		Post post = postRepo.findById(1L).get();
+
+		// TalkSet
+		String content = "content";
+		Talk talk = Talk.builder().contents(content).user(user).post(post).build();
+		
+		// givien
+		Long id = talkRepo.save(talk).getId();
+
+		//TalkSet2
+		Talk talk2 = Talk.builder().contents(content).user(user).post(post).build();
+		Talk talk3 = Talk.builder().contents(content).user(user).post(post).build();
+
+		
+		// given 2
+		talkRepo.save(talk2);
+		talkRepo.save(talk3);
+		
+		// when
+		Talk checkTalk = talkRepo.findById(id).get();
+
+		// then
+		assertThat(checkTalk.getContents(), is(content));
+//		assertThat(checkTalk.getUser().getEmail(), is(email));
+//		assertThat(checkTalk.getPost().getTitle(), is(title));
 	}
 
 }

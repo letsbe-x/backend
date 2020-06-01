@@ -19,16 +19,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 //@EnableSwagger2	//swagger 2.9.2
 @EnableSwagger2WebMvc
 public class SwaggerConfig {
-
-//	@Bean
-//	public Docket api() {
-//		return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.any()) // 현재
-//																									// RequestMapping으로
-//																									// 할당된 모든 URL 리스트를
-//																									// 추출
-//				.paths(PathSelectors.ant("/api/**")) // 그중 /api/** 인 URL들만 필터링
-//				.build();
-//	}
 	@Bean
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2).apiInfo(getApiInfo()).select()

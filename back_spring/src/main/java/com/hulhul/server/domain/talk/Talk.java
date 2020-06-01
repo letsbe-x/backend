@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -34,27 +35,27 @@ public class Talk extends TimeEntity {
 	@Column(name = "c_id")
 	private Long id;
 
-//	@Lob	//LOB(Large Object)
+	@Lob	//LOB(Large Object)
 	@Column(columnDefinition = "TEXT", nullable = false)
-	private String content;
+	private String contents;
 
 //	@Enumerated(EnumType.STRING)
 //	private ContentType type; // fileType;
 
 	// 유저와의 N:1
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "u_id", nullable = false)
+	@ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+	@JoinColumn(name = "u_id", nullable = false, updatable = false)
 	private User user;
 	
 	// Post와의 N:1
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "p_id", nullable = false)
 	private Post post;
 
 
 	@Builder
-	public Talk(String content, Post post, User user) {
-		this.content = content;
+	public Talk(String contents, Post post, User user) {
+		this.contents = contents;
 		this.user = user;
 		this.post = post;
 	}
@@ -62,7 +63,7 @@ public class Talk extends TimeEntity {
 	// Test용 Lombok toString은 양방향 매핑때문에 무한루프 늪에 빠지더라..
 	@Override
 	public String toString() {
-		return "Talk [c_id=" + id + ", content=" + content + ", post=" + post + ", user=" + user + "]";
+		return "Talk [c_id=" + id + ", contents=" + contents + "]";
 	}
 
 }

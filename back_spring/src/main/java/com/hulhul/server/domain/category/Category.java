@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -39,14 +40,9 @@ public class Category {
 
 	private String name;
 //
-	// 1 : 1
-	@JsonIgnore
-	@OneToMany(mappedBy = "category")
+	// 1 : N 양방향
+	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
 	private List<Post> posts = new ArrayList<Post>();
-
-	public void changePost(Post post) {
-		this.posts.add(post);
-	}
 
 	@Builder
 	public Category(String name) {
@@ -56,7 +52,7 @@ public class Category {
 	// Test용 Lombok toString은 양방향 매핑때문에 무한루프 늪에 빠지더라..
 	@Override
 	public String toString() {
-		return "Category [id=" + id + ", name=" + name + ", posts=" + posts + "]";
+		return "Category [id=" + id + ", name=" + name + "]";
 	}
 
 }

@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hulhul.server.domain.post.Post;
 import com.hulhul.server.domain.talk.Talk;
 import com.hulhul.server.domain.time.TimeEntity;
@@ -40,13 +41,15 @@ public class User extends TimeEntity {
 
 	// ToMany default Value = Fetch.LAZY
 	// 1:N
-	@OneToMany(mappedBy = "user")
-	private List<Post> posts = new ArrayList<>();
+//	@JsonIgnore
+//	@OneToMany(mappedBy = "user")
+//	private List<Post> posts = new ArrayList<>();
 
 	// ToMany default Value = Fetch.LAZY
 	// 1:N
-	@OneToMany(mappedBy = "user")
-	private List<Talk> talkList = new ArrayList<>();
+//	@JsonIgnore
+//	@OneToMany(mappedBy = "user")
+//	private List<Talk> talkList = new ArrayList<>();
 
 	private int score;
 
@@ -60,7 +63,7 @@ public class User extends TimeEntity {
 	}
 
 	public void changePost(Post post) {
-		this.posts.add(post);
+//		this.posts.add(post);
 	}
 
 	public boolean matchId(Long id) {
@@ -78,6 +81,12 @@ public class User extends TimeEntity {
 	public void update(User updateUser) {
 		this.password = updateUser.password;
 		this.nickname = updateUser.nickname;
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", email=" + email + ", password=" + password + ", nickname=" + nickname
+				+ ", is_email=" + is_email + ", score=" + score + "]";
 	}
 
 	// TODO : 이메일 확인 추가
