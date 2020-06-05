@@ -1,5 +1,6 @@
 package com.hulhul.server.web.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.hulhul.server.domain.category.Category;
 import com.hulhul.server.domain.category.CategoryRepo;
 import com.hulhul.server.domain.post.Post;
+import com.hulhul.server.web.dto.PostResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,5 +27,27 @@ public class CategoryService {
 
 	public List<Category> getCategoryList() {
 		return categoryRepo.findAll();
+	}
+	
+	public Category getCategory(Long category_id) {
+		return categoryRepo.findById(category_id).get(); 
+	}
+	
+	public List<Post> doRandomPickUp(int postSize, int maxSize){
+		//TODO : 랜덤 최대 20개
+		List<Post> result = new ArrayList<Post>();
+		
+		return result;
+	}
+	
+	public List<PostResponseDto> getPosts(Category category){
+		List<Post> posts = category.getPosts();
+		List<PostResponseDto> result = new ArrayList<PostResponseDto>();
+		
+		for(Post post : posts) {
+			result.add(PostResponseDto.builder().post(post).build());
+		}
+		
+		return result;
 	}
 }

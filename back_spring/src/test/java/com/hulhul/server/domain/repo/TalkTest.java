@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.hulhul.server.domain.anonymous.AnonymousStatus;
 import com.hulhul.server.domain.category.Category;
 import com.hulhul.server.domain.category.CategoryRepo;
 import com.hulhul.server.domain.post.Post;
@@ -64,7 +65,7 @@ public class TalkTest {
 
 		// TalkSet
 		String content = "content";
-		Talk talk = Talk.builder().contents(content).user(user).post(post).build();
+		Talk talk = Talk.builder().contents(content).user(user).post(post).anonymous(AnonymousStatus.Anonymous).build();
 		
 		// givien
 		Long id = talkRepo.save(talk).getId();
@@ -72,8 +73,8 @@ public class TalkTest {
 		//TalkSet2
 		post = talkRepo.findById(id).get().getPost();
 		user = talkRepo.findById(id).get().getUser();
-		Talk talk2 = Talk.builder().contents(content).user(user).post(post).build();
-		Talk talk3 = Talk.builder().contents(content).user(user).post(post).build();
+		Talk talk2 = Talk.builder().contents(content).user(user).post(post).anonymous(AnonymousStatus.RealName).build();
+		Talk talk3 = Talk.builder().contents(content).user(user).post(post).anonymous(AnonymousStatus.Anonymous).build();
 
 		
 		// given 2
@@ -102,14 +103,16 @@ public class TalkTest {
 
 		// TalkSet
 		String content = "content";
-		Talk talk = Talk.builder().contents(content).user(user).post(post).build();
+		Talk talk = Talk.builder().contents(content).user(user).post(post).anonymous(AnonymousStatus.Anonymous).build();
 		
 		// givien
 		Long id = talkRepo.save(talk).getId();
 
 		//TalkSet2
-		Talk talk2 = Talk.builder().contents(content).user(user).post(post).build();
-		Talk talk3 = Talk.builder().contents(content).user(user).post(post).build();
+		post = talkRepo.findById(id).get().getPost();
+		user = talkRepo.findById(id).get().getUser();
+		Talk talk2 = Talk.builder().contents(content).user(user).post(post).anonymous(AnonymousStatus.RealName).build();
+		Talk talk3 = Talk.builder().contents(content).user(user).post(post).anonymous(AnonymousStatus.Anonymous).build();
 
 		
 		// given 2

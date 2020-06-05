@@ -2,13 +2,18 @@ package com.hulhul.server.web.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hulhul.server.domain.category.Category;
 import com.hulhul.server.domain.category.CategoryRepo;
+import com.hulhul.server.domain.post.Post;
+import com.hulhul.server.web.service.CategoryService;
+import com.hulhul.server.web.service.PostService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,15 +22,24 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/category")
 public class CategoryController {
 
-	private final CategoryRepo categoryRepo;
+	private final CategoryService categoryService;
+	private final PostService postService;
 	// TODO : Dto(VO)
 
 	@GetMapping("/list")
-	public ResponseEntity getCategoryList() {
-		List<Category> all = categoryRepo.findAll();
-		for (Category category : all) {
+	public ResponseEntity<List> getCategoryList() {
+		return ResponseEntity.ok(categoryService.getCategoryList());
+	}
+
+	@GetMapping("{category_id}/list")
+	public ResponseEntity getPosts(@PathVariable Long category_id) {
+		Category category = categoryService.getCategory(category_id);
+		
+		//TODO : 랜덤 20개
+		if (category != null) {
+			return ResponseEntity.ok(categoryService.getPosts(category));
 		}
-		return ResponseEntity.ok(all);
+		return new ResponseEntity(HttpStatus.NOT_FOUND);
 	}
 
 }

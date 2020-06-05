@@ -23,6 +23,12 @@ public class PostControllerTest {
 
 	@Test
 	public void 포스트_RESTAPI_통신() {
-		//RestAPI 통신 확인 
+		// RestAPI 통신 확인
+		try {
+			mockMvc.perform(get("/api/v1/post/1").contentType(MediaType.APPLICATION_JSON_VALUE))
+					.andExpect(status().isOk()).andDo(print());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

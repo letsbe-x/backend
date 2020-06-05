@@ -16,6 +16,11 @@ P | Mysql에는 정상적으로 들어왔으나 안되는 문제 :
 
 Fetch.LAZY
 
-영속성 컨텍스트를 벗어난 JPA 프록시 객체 -> //LAZY 문제;;; User가 안만들어졌네;;!
+영속성 컨텍스트를 벗어난 JPA 프록시 객체 -> //LAZY 문제;
  
 ![ref](https://bebong.tistory.com/entry/JPA-Lazy-Evaluation-LazyInitializationException-could-not-initialize-proxy-%E2%80%93-no-Session)
+
+
+> No serializer found for class org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterceptor
+
+spring.jackson.serialization.fail-on-empty-beans=false

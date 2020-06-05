@@ -51,8 +51,9 @@ public class Post extends TimeEntity {
 	// 순서 있어야함
 	// ToMany는 default가 지연로딩이므로 설정 안해도 된다.
 	// CascadeType.. persist에서 영속성 관련부분 - 참조 객체 !주의
-	@OneToMany(mappedBy = "post", cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
-	private List<Talk> talkList = new ArrayList<>();
+//	@JsonIgnore // 양방향 연관관계라면 하나는 해줘야한다. 안그럼 무한루프~
+//	@OneToMany(mappedBy = "post", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+//	private List<Talk> talkList = new ArrayList<>();
 
 	// N : 1 Post -> Category
 	// CascadeType.. persist에서 영속성 관련부분 - 참조 객체 !주=GenerationType의
@@ -68,28 +69,21 @@ public class Post extends TimeEntity {
 	@Column(length = 3000, nullable = false)
 	private String contents;
 
-//	@Enumerated(EnumType.STRING)
-//	private PostStatus status; // POST 상태
+	@Enumerated(EnumType.STRING)
+	private PostStatus status; // POST 상태
 
-//	@Enumerated(EnumType.STRING)
-//	private AnonymousStatus anonymous; // 유저 익명 상태
-
-	// 연관관계 메서드
-//	public void addConversation(Talk talk) {
-//		talkList.add(talk);
-//		Talk.setPost(this);
-//	}
-
-//	public void setCategory(Category category) {
-//		this.category = category;
-//	}
+	@Enumerated(EnumType.STRING)
+	private AnonymousStatus anonymous; // 유저 익명 상태
 
 	@Builder
-	public Post(String title, String contents, Category category, User user) {
+	public Post(String title, String contents, Category category, User user, PostStatus status,
+			AnonymousStatus anonymous) {
 		this.title = title;
 		this.contents = contents;
 		this.user = user;
 		this.category = category;
+		this.status = status;
+		this.anonymous = anonymous;
 	}
 
 	// Test용 Lombok toString은 양방향 매핑때문에 무한루프 늪에 빠지더라..

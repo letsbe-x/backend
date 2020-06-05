@@ -23,6 +23,12 @@ public class CategoryControllerTest {
 
 	@Test
 	public void 카테고리_RESTAPI_통신() {
-		//RestAPI 통신 확인 
+		// RestAPI 통신 확인
+		try {
+			mockMvc.perform(get("/api/v1/category/1/list").contentType(MediaType.APPLICATION_JSON_VALUE))
+					.andExpect(status().isOk()).andDo(print());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

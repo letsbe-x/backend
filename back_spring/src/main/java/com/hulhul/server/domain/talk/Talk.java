@@ -14,6 +14,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.hulhul.server.domain.anonymous.AnonymousStatus;
 import com.hulhul.server.domain.post.Post;
 import com.hulhul.server.domain.time.TimeEntity;
 import com.hulhul.server.domain.user.User;
@@ -51,13 +52,17 @@ public class Talk extends TimeEntity {
 	@ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "p_id", nullable = false)
 	private Post post;
+	
+	@Enumerated(EnumType.STRING)
+	private AnonymousStatus anonymous; // 유저 익명 상태
 
 
 	@Builder
-	public Talk(String contents, Post post, User user) {
+	public Talk(String contents, Post post, User user, AnonymousStatus anonymous) {
 		this.contents = contents;
 		this.user = user;
 		this.post = post;
+		this.anonymous = anonymous;
 	}
 
 	// Test용 Lombok toString은 양방향 매핑때문에 무한루프 늪에 빠지더라..

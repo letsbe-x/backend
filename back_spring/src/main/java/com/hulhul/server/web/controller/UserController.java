@@ -22,9 +22,9 @@ import com.hulhul.server.web.util.HttpSessionUtils;
 @RequestMapping("/api/v1/user")
 public class UserController {
 
-	//TODO : Spring Security로 변경
-	//TODO : 예외 상황관련해서도 처리 할것
-	//TODO : 이메일 확인 관련 Mapping
+	// TODO : Spring Security로 변경
+	// TODO : 예외 상황관련해서도 처리 할것
+	// TODO : 이메일 확인 관련 Mapping
 	@Autowired
 	UserRepo userRepo;
 

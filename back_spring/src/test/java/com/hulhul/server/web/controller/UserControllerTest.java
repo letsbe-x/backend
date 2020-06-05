@@ -25,9 +25,9 @@ public class UserControllerTest {
 	public void 유저_RESTAPI_통신() {
 		//RestAPI 통신 확인 
 		try {
-			mockMvc.perform(get("/user/test").contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk())
+			mockMvc.perform(get("/api/v1/user/test").contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk())
 					.andDo(print());
-			mockMvc.perform(get("/user/users").contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk())
+			mockMvc.perform(get("/api/v1/user/users").contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk())
 			.andDo(print());
 		} catch (Exception e) {
 			e.printStackTrace();
