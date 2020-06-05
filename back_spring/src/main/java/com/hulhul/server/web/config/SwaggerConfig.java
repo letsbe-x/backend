@@ -28,19 +28,6 @@ public class SwaggerConfig {
 
 	}
 
-	private Set<String> getConsumeContentTypes() {
-		Set<String> consumes = new HashSet<>();
-		consumes.add("application/json;charset=UTF-8");
-		consumes.add("application/x-www-form-urlencoded");
-		return consumes;
-	}
-
-	private Set<String> getProduceContentTypes() {
-		Set<String> produces = new HashSet<>();
-		produces.add("application/json;charset=UTF-8");
-		return produces;
-	}
-
 	private ApiInfo getApiInfo() {
 		return new ApiInfoBuilder().title("HulHul API").description("고민상담 API").version("1.0").build();
 	}

@@ -1,6 +1,7 @@
 package com.hulhul.server.domain.user;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -14,7 +15,7 @@ public interface UserRepo extends JpaRepository<User, Long> {
 	// <T, ID> : <타입, pk 자료형>
 
 	// 함수 이름 규칙대로
-	public User findByEmail(String email);
+	public Optional<User> findByEmail(String email);
 
 	// 닉네임 중복체크 
 	public List<User> findByNickname(String nickname);

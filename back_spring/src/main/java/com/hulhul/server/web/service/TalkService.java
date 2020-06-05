@@ -21,7 +21,6 @@ public class TalkService {
 
 	// 객체를 필드주입이 아닌 생성자주입으로 넣는것이 좋다.
 	private final TalkRepo talkRepo;
-	private final TalkRepo postRepo;
 
 	public List<Talk> getTalkList(Post post) {
 		return talkRepo.findByPost(post);

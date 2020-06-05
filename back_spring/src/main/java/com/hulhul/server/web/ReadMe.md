@@ -51,5 +51,9 @@ CascadeType.ALL을 CascadeType.MERGED나 CascadeType.DETACH로 바꿔준다.
 
 생명주기 확인해볼것 : https://blog.woniper.net/266
 
+```
+Field userDetailsService in com.hulhul.server.web.security.JwtTokenProvider required a bean of type 'org.springframework.security.core.userdetails.UserDetailsService' that could not be found.
+```
 
+Bean 생성 후 주입 
 

@@ -55,7 +55,7 @@ public class UserService {
 	}
 	
 	public User login(String email, String password) throws NoSuchAlgorithmException {
-		User userInDB = userRepo.findByEmail(email);
+		User userInDB = userRepo.findByEmail(email).get();
 		if(userInDB != null) {
 			password = encryptPassword(password);
 			if(!checkPassword(password, userInDB.getPassword())) {
@@ -82,6 +82,10 @@ public class UserService {
 
 	public User findOne(Long id) {
 		return userRepo.findById(id).get();
+	}
+	
+	public User findByEmail(String email) {
+		return userRepo.findByEmail(email).get();
 	}
 
 	@Transactional
