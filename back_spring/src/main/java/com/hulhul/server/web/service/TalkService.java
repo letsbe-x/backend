@@ -5,64 +5,69 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.hulhul.server.domain.category.Category;
 import com.hulhul.server.domain.post.Post;
-import com.hulhul.server.domain.post.PostRepo;
+import com.hulhul.server.domain.talk.Talk;
+import com.hulhul.server.domain.talk.TalkRepo;
 import com.hulhul.server.domain.user.User;
 import com.hulhul.server.web.dto.PostRequestDto;
-import com.hulhul.server.web.dto.PostResponseDto;
+import com.hulhul.server.web.dto.TalkRequestDto;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional(readOnly = true) // 데이터의 변경이 없는 읽기 전용 메서드에 사용, 속성 컨텍스트를 플러시 하지 않으므로 약간의 성능 향상(읽기 전용에는 다 적용)
 @RequiredArgsConstructor // final, @NonNull이 붙은 필드를 파라미터로 받는 생성자를 만들어주는 에너테이션
-public class PostService {
+public class TalkService {
 
-	private final PostRepo postRepo;
+	// 객체를 필드주입이 아닌 생성자주입으로 넣는것이 좋다.
+	private final TalkRepo talkRepo;
+	private final TalkRepo postRepo;
 
-	public Post getPost(Long post_id) {
-		return postRepo.findById(post_id).get();
+	public List<Talk> getTalkList(Post post) {
+		return talkRepo.findByPost(post);
+	}
+
+	public Talk getTalk(Long talk_id) {
+		return talkRepo.findById(talk_id).get();
 	}
 
 	@Transactional
-	public Post writePost(PostRequestDto postDto, User user, Category category) {
-		Post post = postDto.toEntity(user, category);
+	public Talk writeTalk(TalkRequestDto talkDto, User user) {
+		Talk talk = talkDto.toEntity(user);
 
-		return postRepo.save(post);
+		return talkRepo.save(talk);
 	}
 
 	@Transactional
-	public Post updatePost(Long post_id, Long user_id, PostRequestDto postDto, Category category) {
-		Post post = postRepo.findById(postDto.getId()).get();
-		User originUser = post.getUser();
+	public Talk updateTalk(Long talk_id, Long user_id, PostRequestDto postDto) {
+		Talk talk = talkRepo.findById(talk_id).get();
+		User originUser = talk.getUser();
 
 		if (doMatchUser(originUser, user_id)) {
 			return null;
 			// 권한 없음
 		}
 
-		post.setUpdate(category, post.getContents(), post.getAnonymous());
+		talk.setUpdate(talk.getContents(), talk.getAnonymous());
 
-		return post;
+		return talk;
 	}
 
 	@Transactional
-	public boolean deletePost(Long post_id, Long user_id) {
-		Post post = getPost(post_id);
-		User originUser = post.getUser();
+	public boolean deleteTalk(Long talk_id, Long user_id) {
+		Talk talk = getTalk(talk_id);
+		User originUser = talk.getUser();
 
 		if (doMatchUser(originUser, user_id)) {
 			return false;
 			// 권한 없음
 		}
 
-		postRepo.delete(post);
+		talkRepo.delete(talk);
 		return true;
 	}
 
 	public boolean doMatchUser(User user, Long user_id) {
 		return !user.getId().equals(user_id);
 	}
-
 }

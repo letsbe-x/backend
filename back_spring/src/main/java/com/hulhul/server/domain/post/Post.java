@@ -87,6 +87,13 @@ public class Post extends TimeEntity {
 		this.anonymous = anonymous;
 	}
 
+	public Post setUpdate(Category category, String contents, AnonymousStatus anonymous) {
+		this.category = category;
+		this.contents = contents;
+		this.anonymous = anonymous;
+		return this;
+	}
+
 	// Test용 Lombok toString은 양방향 매핑때문에 무한루프 늪에 빠지더라..
 	@Override
 	public String toString() {

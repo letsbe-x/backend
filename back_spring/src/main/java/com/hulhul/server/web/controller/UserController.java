@@ -3,20 +3,19 @@ package com.hulhul.server.web.controller;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hulhul.server.domain.user.User;
 import com.hulhul.server.domain.user.UserRepo;
 import com.hulhul.server.web.util.HttpSessionUtils;
+
+import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -34,7 +33,7 @@ public class UserController {
 	}
 
 	@PostMapping("/login")
-	public String login(String email, String password, HttpSession session) {
+	public String login(String email, String password, @ApiIgnore HttpSession session) {
 		User user = userRepo.findByEmail(email);
 
 		if (user == null) {
@@ -48,6 +47,7 @@ public class UserController {
 		}
 
 		System.out.println("Login Success !");
+		//TODO : JWT OR OAuth2
 		session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
 
 		return "redirect:/";

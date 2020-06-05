@@ -2,6 +2,7 @@ package com.hulhul.server.web.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -17,7 +18,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hulhul.server.domain.anonymous.AnonymousStatus;
-import com.hulhul.server.domain.post.PostStatus;
 import com.hulhul.server.web.dto.PostRequestDto;
 
 @RunWith(SpringRunner.class)
@@ -27,7 +27,7 @@ public class PostControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
-	
+
 	@Autowired
 	private ObjectMapper objectMapper;
 
@@ -45,17 +45,44 @@ public class PostControllerTest {
 	@Test
 	public void 포스트_로그인후_저장() {
 		MockHttpSession session = new MockHttpSession();
-		PostRequestDto dto = PostRequestDto.builder().title("테스트").contents("테스트 콘텐츠").anonymous(AnonymousStatus.Anonymous).category_id(1L).build();
+		PostRequestDto dto = PostRequestDto.builder().title("테스트").contents("테스트 콘텐츠")
+				.anonymous(AnonymousStatus.Anonymous).category_id(1L).build();
+		try {
+			login(session);
+
+			String content = objectMapper.writeValueAsString(dto);
+
+			mockMvc.perform(post("/api/v1/post/save").session(session).content(content)
+					.contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()).andDo(print());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void 포스트_로그인후_업데이트() {
+		MockHttpSession session = new MockHttpSession();
+		PostRequestDto dto = PostRequestDto.builder().title("테스트").contents("테스트 콘텐츠")
+				.anonymous(AnonymousStatus.Anonymous).category_id(1L).build();
+		try {
+			login(session);
+
+			String content = objectMapper.writeValueAsString(dto);
+
+			mockMvc.perform(put("/api/v1/post/update").session(session).content(content)
+					.contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()).andDo(print());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void login(MockHttpSession session) {
 		try {
 			mockMvc.perform(post("/api/v1/user/login").param("email", "test1@test.com").param("password", "test1")
 					.session(session).contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk())
 					.andDo(print());
-			
-			String content = objectMapper.writeValueAsString(dto);
-			
-			mockMvc.perform(post("/api/v1/post/save").session(session).content(content).contentType(MediaType.APPLICATION_JSON_VALUE))
-					.andExpect(status().isOk()).andDo(print());
 		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

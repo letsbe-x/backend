@@ -23,6 +23,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import net.bytebuddy.implementation.bind.MethodDelegationBinder.ParameterBinding.Anonymous;
 
 @Getter
 @Setter
@@ -36,7 +37,7 @@ public class Talk extends TimeEntity {
 	@Column(name = "c_id")
 	private Long id;
 
-	@Lob	//LOB(Large Object)
+	@Lob // LOB(Large Object)
 	@Column(columnDefinition = "TEXT", nullable = false)
 	private String contents;
 
@@ -47,15 +48,18 @@ public class Talk extends TimeEntity {
 	@ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "u_id", nullable = false, updatable = false)
 	private User user;
-	
+
 	// Post와의 N:1
 	@ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "p_id", nullable = false)
 	private Post post;
-	
+
 	@Enumerated(EnumType.STRING)
 	private AnonymousStatus anonymous; // 유저 익명 상태
 
+	protected Post getPost() {
+		return post;
+	}
 
 	@Builder
 	public Talk(String contents, Post post, User user, AnonymousStatus anonymous) {
@@ -63,6 +67,12 @@ public class Talk extends TimeEntity {
 		this.user = user;
 		this.post = post;
 		this.anonymous = anonymous;
+	}
+
+	public Talk setUpdate(String contents, AnonymousStatus anonymous) {
+		this.contents = contents;
+		this.anonymous = anonymous;
+		return this;
 	}
 
 	// Test용 Lombok toString은 양방향 매핑때문에 무한루프 늪에 빠지더라..
