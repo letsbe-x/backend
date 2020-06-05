@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hulhul.server.domain.category.Category;
-import com.hulhul.server.domain.category.CategoryRepo;
-import com.hulhul.server.domain.post.Post;
 import com.hulhul.server.web.service.CategoryService;
-import com.hulhul.server.web.service.PostService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 public class CategoryController {
 
 	private final CategoryService categoryService;
-	private final PostService postService;
 	// TODO : Dto(VO)
 
 	@GetMapping("/list")

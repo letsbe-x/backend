@@ -29,9 +29,10 @@ import com.hulhul.server.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Getter
-//@Setter //Entity 클래스에서는 절대 Setter 메소드를 만들지 않는다. (자바빈 인스턴스 값 변경때문에라도...)
+@Setter
 @RequiredArgsConstructor
 @Entity
 @Table(name = "Posts")

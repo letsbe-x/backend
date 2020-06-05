@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.hulhul.server.domain.category.Category;
 import com.hulhul.server.domain.post.Post;
 import com.hulhul.server.domain.post.PostRepo;
+import com.hulhul.server.domain.user.User;
+import com.hulhul.server.web.dto.PostRequestDto;
 import com.hulhul.server.web.dto.PostResponseDto;
 
 import lombok.RequiredArgsConstructor;
@@ -17,18 +19,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor // final, @NonNull이 붙은 필드를 파라미터로 받는 생성자를 만들어주는 에너테이션
 public class PostService {
 	
-	private PostRepo postRepo;
+	private final PostRepo postRepo;
 
-	// TODO : 익명 글쓰기 인경우에는 HashSet에서 내려주는 dto의 닉네임을 변경한다.
-//	private PostResponseDto getPost(String CategoryId, String PostId) {
-//		return null;
-//	}
+
 	
-	
-//	@Transactional
-//    public Long save(PostsSaveRequestDto requestDto) {
-//        return postsRepo.save(requestDto.toEntity()).getId();
-//    }
 //
 //    @Transactional
 //    public Long update(Long id, PostsUpdateRequestDto requestDto) {
@@ -41,7 +35,20 @@ public class PostService {
 //    }
 //
 	public Post getPost(Long post_id) {
-		return postRepo.findById(post_id).get(); 
+		return postRepo.findById(post_id).get();
 	}
+	
+	@Transactional
+	public Long save(PostRequestDto postDto, User user, Category category) {
+		Post post = postDto.toEntity(user, category);
+		
+		return postRepo.save(post).getId();
+	}
+	
+//	public Long update(PostRequestDto postDto, User user, Category category) {
+//		Post post = postDto.toEntity(user, category);
+//		
+//		return postRepo.save(post).getId();
+//	}
 	
 }

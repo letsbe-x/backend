@@ -116,10 +116,10 @@ public class PostTest {
 
 	@Test
 	public void 포스트_불러오기() {
-//		Post post = postRepo.findById(1L).get();
-		Post post = postRepo.findById(2L).orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. id=" + 2L));
+		Post post = postRepo.findById(1L).get();
+//		Post post = postRepo.findById(2L).orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. id=" + 2L));
 
-		System.out.print(post);
+		System.out.println(post);
 	}
 
 }

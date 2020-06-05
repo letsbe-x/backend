@@ -4,17 +4,16 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 import com.hulhul.server.domain.anonymous.AnonymousStatus;
-import com.hulhul.server.domain.category.Category;
 import com.hulhul.server.domain.post.Post;
 import com.hulhul.server.domain.post.PostStatus;
 import com.hulhul.server.domain.time.TimeEntity;
-import com.hulhul.server.domain.user.User;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 public class PostResponseDto extends TimeEntity {
+	private Long id;
 	private String title;
 	private String contents;
 	private String nickName;
@@ -28,11 +27,11 @@ public class PostResponseDto extends TimeEntity {
 	// TODO : 닉네임 변경 - 비공개인경우
 	@Builder
 	public PostResponseDto(Post post) {
+		this.id = post.getId();
 		this.title = post.getTitle();
 		this.contents = post.getContents();
 		this.status = post.getStatus();
 		this.anonymous = post.getAnonymous();
-
 		this.nickName = doAnonymous(post);
 	}
 

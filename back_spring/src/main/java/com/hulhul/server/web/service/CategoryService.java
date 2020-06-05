@@ -3,6 +3,7 @@ package com.hulhul.server.web.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,10 @@ public class CategoryService {
 		for(Post post : posts) {
 			result.add(PostResponseDto.builder().post(post).build());
 		}
+		
+//		List<PostResponseDto> result = posts.stream()
+//                .map(post -> PostResponseDto.builder().post(post).build())
+//                .collect(Collectors.toList());
 		
 		return result;
 	}
