@@ -1,9 +1,12 @@
 package com.hulhul.server.web.controller;
 
+import java.security.NoSuchAlgorithmException;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,44 +16,38 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hulhul.server.domain.user.User;
 import com.hulhul.server.domain.user.UserRepo;
+import com.hulhul.server.web.service.UserService;
 import com.hulhul.server.web.util.HttpSessionUtils;
 
-import springfox.documentation.annotations.ApiIgnore;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/user")
+@RequiredArgsConstructor
+@CrossOrigin("*")
 public class UserController {
 
 	// TODO : Spring Security로 변경
 	// TODO : 예외 상황관련해서도 처리 할것
 	// TODO : 이메일 확인 관련 Mapping
-	@Autowired
-	UserRepo userRepo;
-
+	
+	private final UserRepo userRepo;
+	
+	private final UserService userService;
+	
+	
 	@GetMapping("/loginForm")
 	public String loginForm() {
 		return "/user/login";
 	}
 
 	@PostMapping("/login")
-	public String login(String email, String password, @ApiIgnore HttpSession session) {
-		User user = userRepo.findByEmail(email);
-
-		if (user == null) {
-			System.out.println("Login Failure !");
-			return "redirect:/users/loginForm";
-		}
-
-		if (!user.matchPassword(password)) {
-			System.out.println("Login Failure !");
-			return "redirect:/users/loginForm";
-		}
-
-		System.out.println("Login Success !");
-		//TODO : JWT OR OAuth2
+	public ResponseEntity<User> login(@RequestBody User user, HttpSession session) throws NoSuchAlgorithmException {
+//		System.out.println(user.getEmail()+" "+user.getPassword() );
+		User userInDB = userService.login(user.getEmail(), user.getPassword());
 		session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
 
-		return "redirect:/";
+		return new ResponseEntity<User>(userInDB, HttpStatus.OK) ;
 	}
 
 	@GetMapping("/logout")
@@ -65,10 +62,9 @@ public class UserController {
 	}
 
 	@PostMapping("")
-	public String create(User user) {
-		userRepo.save(user);
-		System.out.println(user);
-		return "redirect:/users";
+	public ResponseEntity<String> create(@RequestBody User user) throws NoSuchAlgorithmException {
+		Long id = userService.doJoin(user);
+		return new ResponseEntity<String>(Long.toString(id), HttpStatus.OK);
 	}
 
 	@GetMapping("")
@@ -94,10 +90,10 @@ public class UserController {
 	}
 
 	@PutMapping("/{id}")
-	public String update(@PathVariable Long id, User updateUser, HttpSession session) {
-		if (!HttpSessionUtils.isLoginUser(session)) {
-			return "redirect:/users/loginForm";
-		}
+	public String update(@PathVariable Long id,@RequestBody User updateUser, HttpSession session) {
+//		if (!HttpSessionUtils.isLoginUser(session)) {
+//			return "redirect:/users/loginForm";
+//		}
 
 		User sessionUser = HttpSessionUtils.getUserFormSession(session);
 
