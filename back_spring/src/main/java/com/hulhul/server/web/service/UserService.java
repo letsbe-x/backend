@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.hulhul.server.domain.user.User;
 import com.hulhul.server.domain.user.UserRepo;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @Service
@@ -21,8 +23,10 @@ public class UserService {
 	 * 회원가입
 	 */
 	@Transactional // 변경
-	public Long doJoin(User user) {
+	public Long doJoin(User user) throws NoSuchAlgorithmException {
 		validateDuplicateUser(user); // 중복 유저 검증
+		System.out.println(user.getPassword());
+		user.setPassword(encryptPassword(user.getPassword()));
 		userRepo.save(user);
 		return user.getId();
 	}
@@ -32,6 +36,41 @@ public class UserService {
 		if (!findUsers.isEmpty()) {
 			throw new IllegalStateException("이미 존재하는 닉네임입니다.");
 		}
+	}
+	
+	private String encryptPassword(String password) throws NoSuchAlgorithmException {
+		MessageDigest md = MessageDigest.getInstance("SHA-256");
+		md.update(password.getBytes());
+		
+		return byteToHex(md.digest());
+	}
+	
+	private String byteToHex(byte[] input) {
+		StringBuilder sb = new StringBuilder();
+		for(byte i : input) {
+			sb.append(String.format("%02x", i));
+		}
+		System.out.println(sb.toString());
+		return sb.toString();
+	}
+	
+	public User login(String email, String password) throws NoSuchAlgorithmException {
+		User userInDB = userRepo.findByEmail(email);
+		if(userInDB != null) {
+			password = encryptPassword(password);
+			if(!checkPassword(password, userInDB.getPassword())) {
+				throw new IllegalStateException("아이디 혹은 비밀번호를 확인해 주세요.");
+			}
+		}else {
+			throw new IllegalStateException("아이디 혹은 비밀번호를 확인해 주세요.");
+		}
+		
+		return userInDB;
+		
+	}
+	
+	private boolean checkPassword(String password, String comparePassword) {
+		return password.equals(comparePassword);
 	}
 
 	/**

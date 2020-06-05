@@ -4,6 +4,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,16 +50,41 @@ public class UserTest {
 		String email = "test1";
 		String password = "test1";
 		String nickname = "test1";
+		
+		
+		try {
+			password = encryptPassword(password);
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			// given
+			Long id = userRepo.save(User.builder().email(email).password(password).nickname(nickname).build()).getId();
 
-		// given
-		Long id = userRepo.save(User.builder().email(email).password(password).nickname(nickname).build()).getId();
+			// when
+			User user = userRepo.findById(id).get();
 
-		// when
-		User user = userRepo.findById(id).get();
-
-		// then
-		assertThat(user.getEmail(), is(email));
-		assertThat(user.getPassword(), is(password));
+			// then
+			assertThat(user.getEmail(), is(email));
+			assertThat(user.getPassword(), is(password));
+		}
+		System.out.println("test : "+password);
+		
+	}
+	private String encryptPassword(String password) throws NoSuchAlgorithmException {
+		MessageDigest md = MessageDigest.getInstance("SHA-256");
+		md.update(password.getBytes());
+		
+		return byteToHex(md.digest());
+	}
+	
+	private String byteToHex(byte[] input) {
+		StringBuilder sb = new StringBuilder();
+		for(byte i : input) {
+			sb.append(String.format("%02x", i));
+		}
+		System.out.println(sb.toString());
+		return sb.toString();
 	}
 
 	@Test
@@ -66,6 +93,8 @@ public class UserTest {
 		String email = "test1";
 		String password = "test1";
 		String nickname = "test1";
+		
+		
 
 		// given
 		Long id = userRepo.save(User.builder().email(email).password(password).nickname(nickname).build()).getId();

@@ -61,6 +61,12 @@ public class User extends TimeEntity {
 		this.score = 0;
 		this.is_email = false;
 	}
+	
+	@Builder
+	public User(String email, String password) {
+		this.email = email;
+		this.password = password;
+	}
 
 	public void changePost(Post post) {
 //		this.posts.add(post);
