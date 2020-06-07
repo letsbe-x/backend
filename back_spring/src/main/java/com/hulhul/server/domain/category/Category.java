@@ -18,6 +18,8 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.Formula;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hulhul.server.domain.post.Post;
 import com.hulhul.server.domain.user.User;
@@ -44,6 +46,10 @@ public class Category {
 	@JsonIgnore // 양방향 연관관계라면 하나는 해줘야한다. 안그럼 무한루프~
 	@OneToMany(mappedBy = "category", cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
 	private List<Post> posts = new ArrayList<Post>();
+
+	@JsonIgnore
+	@Formula("(select count(*) from Posts p where p.ca_id = id)")
+	private int countOfPosts;
 
 	@Builder
 	public Category(String name) {

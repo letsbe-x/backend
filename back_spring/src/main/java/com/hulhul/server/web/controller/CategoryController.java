@@ -37,7 +37,7 @@ public class CategoryController {
 	public ResponseEntity getPosts(@PathVariable Long category_id) {
 		Category category = categoryService.getCategory(category_id);
 
-		// TODO : 랜덤 20개
+		// TODO : 랜덤 20개 -> 12개 
 		if (category != null) {
 			return ResponseEntity.ok(categoryService.getPosts(category));
 		}
