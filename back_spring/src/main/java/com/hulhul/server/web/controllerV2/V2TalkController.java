@@ -47,7 +47,7 @@ public class V2TalkController {
 	PostService postService;
 
 	@GetMapping("{post_id}/list")
-	public ResponseEntity getTalk(@PathVariable Long post_id) {
+	public ResponseEntity getTalkList(@PathVariable Long post_id) {
 		Post post = postService.getPost(post_id);
 		if (post != null) {
 			return ResponseEntity.ok(talkService.getTalkList(post));
@@ -59,11 +59,11 @@ public class V2TalkController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@PostMapping("write")
-	public ResponseEntity savePost(@RequestBody TalkRequestDto dto) {
+	public ResponseEntity saveTalk(@RequestBody TalkRequestDto dto) {
 
 		User user = getUser();
-
-		return ResponseEntity.ok(talkService.writeTalk(dto, user));
+		Post post = postService.getPost(dto.getPost_id());
+		return ResponseEntity.ok(getDto(talkService.writeTalk(dto, post, user)));
 	}
 
 	// R
@@ -71,7 +71,7 @@ public class V2TalkController {
 			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@Transactional(readOnly = true) // 데이터의 변경이 없는 읽기 전용 메서드에 사용, 속성 컨텍스트를 플러시 하지 않으므로 약간의 성능 향상(읽기 전용에는 다 적용)
 	@GetMapping("{talk_id}")
-	public ResponseEntity getPost(@PathVariable Long talk_id) {
+	public ResponseEntity getTalk(@PathVariable Long talk_id) {
 		Talk talk = talkService.getTalk(talk_id);
 
 		if (talk != null) {
@@ -84,7 +84,7 @@ public class V2TalkController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@PutMapping("{talk_id}")
-	public ResponseEntity updatePost(@PathVariable Long talk_id, @RequestBody PostRequestDto dto) {
+	public ResponseEntity updateTalk(@PathVariable Long talk_id, @RequestBody PostRequestDto dto) {
 		if (talk_id == null) {
 			return new ResponseEntity(HttpStatus.NOT_MODIFIED);
 			// 잘못된 요청
@@ -99,7 +99,7 @@ public class V2TalkController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@DeleteMapping("{talk_id}")
-	public ResponseEntity deletePost(@PathVariable Long talk_id) {
+	public ResponseEntity deleteTalk(@PathVariable Long talk_id) {
 		if (talk_id == null) {
 			return new ResponseEntity(HttpStatus.NOT_MODIFIED);
 			// 잘못된 요청

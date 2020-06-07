@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.hulhul.server.domain.post.Post;
+import com.hulhul.server.domain.post.PostRepo;
 import com.hulhul.server.domain.talk.Talk;
 import com.hulhul.server.domain.talk.TalkRepo;
 import com.hulhul.server.domain.user.User;
@@ -31,8 +32,8 @@ public class TalkService {
 	}
 
 	@Transactional
-	public Talk writeTalk(TalkRequestDto talkDto, User user) {
-		Talk talk = talkDto.toEntity(user);
+	public Talk writeTalk(TalkRequestDto talkDto, Post post, User user) {
+		Talk talk = talkDto.toEntity(post, user);
 
 		return talkRepo.save(talk);
 	}

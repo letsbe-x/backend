@@ -17,7 +17,7 @@ import lombok.Setter;
 
 @Getter
 public class TalkRequestDto {
-	private Long id;
+	private Long post_id;
 	private String contents;
 
 	@Enumerated(EnumType.STRING)
@@ -25,12 +25,13 @@ public class TalkRequestDto {
 
 	// Save용
 	@Builder
-	public TalkRequestDto(String contents, AnonymousStatus anonymous) {
+	public TalkRequestDto(Long post_id, String contents, AnonymousStatus anonymous) {
+		this.post_id = post_id;
 		this.contents = contents;
 		this.anonymous = anonymous;
 	}
 
-	public Talk toEntity(User user) {
-		return Talk.builder().contents(contents).anonymous(AnonymousStatus.Anonymous).user(user).build();
+	public Talk toEntity(Post post, User user) {
+		return Talk.builder().contents(contents).post(post).anonymous(AnonymousStatus.Anonymous).user(user).build();
 	}
 }
