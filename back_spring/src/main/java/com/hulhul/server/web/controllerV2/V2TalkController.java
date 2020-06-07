@@ -116,8 +116,8 @@ public class V2TalkController {
 
 	private User getUser() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String email = authentication.getName();
-		User user = userService.findByEmail(email);
+		String nickname = authentication.getName();
+		User user = userService.findByNickname(nickname);
 		return user;
 	}
 }

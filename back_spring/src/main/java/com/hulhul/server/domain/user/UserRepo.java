@@ -18,7 +18,7 @@ public interface UserRepo extends JpaRepository<User, Long> {
 	public Optional<User> findByEmail(String email);
 
 	// 닉네임 중복체크 
-	public List<User> findByNickname(String nickname);
+	public Optional<User> findByNickname(String nickname);
 
 	public List<User> findByNicknameLike(String nickname);
 

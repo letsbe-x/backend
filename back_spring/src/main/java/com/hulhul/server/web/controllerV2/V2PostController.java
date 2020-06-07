@@ -111,8 +111,8 @@ public class V2PostController {
 
 	private User getUser() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String email = authentication.getName();
-		User user = userService.findByEmail(email);
+		String nickName = authentication.getName();
+		User user = userService.findByNickname(nickName);
 		return user;
 	}
 }

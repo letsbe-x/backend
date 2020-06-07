@@ -120,7 +120,7 @@ public class User extends TimeEntity implements UserDetails {
 	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
-		return this.email;
+		return this.nickname;
 	}
 
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

@@ -25,13 +25,13 @@ public class UserService {
 	@Transactional // 변경
 	public Long doJoin(User user) throws NoSuchAlgorithmException {
 		validateDuplicateEmail(user.getEmail());
-		validateDuplicateNickName(user.getNickname()); // 중복 유저 검증		
+		validateDuplicateNickName(user.getNickname()); // 중복 유저 검증
 //		System.out.println(user.getPassword());
 		user.setPassword(encryptPassword(user.getPassword()));
 		userRepo.save(user);
 		return user.getId();
 	}
-	
+
 	public void validateDuplicateEmail(String email) {
 		User findUser = userRepo.findByEmail(email).orElse(new User());
 		if (findUser.getEmail() != null) {
@@ -40,43 +40,44 @@ public class UserService {
 	}
 
 	public void validateDuplicateNickName(String nickname) {
-		List<User> findUsers = userRepo.findByNickname(nickname);
-		if (!findUsers.isEmpty()) {
+		User findUsers = userRepo.findByNickname(nickname).orElseGet(User::new);
+		System.out.println(findUsers);
+		if (findUsers.getId() != null) {
 			throw new IllegalStateException("이미 존재하는 닉네임입니다.");
 		}
 	}
-	
+
 	private String encryptPassword(String password) throws NoSuchAlgorithmException {
 		MessageDigest md = MessageDigest.getInstance("SHA-256");
 		md.update(password.getBytes());
-		
+
 		return byteToHex(md.digest());
 	}
-	
+
 	private String byteToHex(byte[] input) {
 		StringBuilder sb = new StringBuilder();
-		for(byte i : input) {
+		for (byte i : input) {
 			sb.append(String.format("%02x", i));
 		}
 		System.out.println(sb.toString());
 		return sb.toString();
 	}
-	
+
 	public User login(String email, String password) throws NoSuchAlgorithmException {
 		User userInDB = userRepo.findByEmail(email).get();
-		if(userInDB != null) {
+		if (userInDB != null) {
 			password = encryptPassword(password);
-			if(!checkPassword(password, userInDB.getPassword())) {
+			if (!checkPassword(password, userInDB.getPassword())) {
 				throw new IllegalStateException("아이디 혹은 비밀번호를 확인해 주세요.");
 			}
-		}else {
+		} else {
 			throw new IllegalStateException("아이디 혹은 비밀번호를 확인해 주세요.");
 		}
-		
+
 		return userInDB;
-		
+
 	}
-	
+
 	private boolean checkPassword(String password, String comparePassword) {
 		return password.equals(comparePassword);
 	}
@@ -91,12 +92,16 @@ public class UserService {
 	public User findOne(Long id) {
 		return userRepo.findById(id).get();
 	}
-	
+
 	public User findByEmail(String email) {
 		return userRepo.findByEmail(email).get();
 	}
-	
-	public List<User> searchUserByNickName(String nickname){
+
+	public User findByNickname(String nickName) {
+		return userRepo.findByNickname(nickName).get();
+	}
+
+	public List<User> searchUserByNickName(String nickname) {
 		return userRepo.findByNicknameLike(nickname);
 	}
 
