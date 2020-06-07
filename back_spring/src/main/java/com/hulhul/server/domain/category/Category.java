@@ -10,11 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -22,7 +18,6 @@ import org.hibernate.annotations.Formula;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hulhul.server.domain.post.Post;
-import com.hulhul.server.domain.user.User;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -33,7 +28,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@Table(name = "Categories", uniqueConstraints = @UniqueConstraint(columnNames = { "name" }))
+@Table(name = "categories", uniqueConstraints = @UniqueConstraint(columnNames = { "name" }))
 public class Category {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,7 +43,7 @@ public class Category {
 	private List<Post> posts = new ArrayList<Post>();
 
 	@JsonIgnore
-	@Formula("(select count(*) from Posts p where p.ca_id = id)")
+	@Formula("(select count(*) from posts p where p.ca_id = ca_id)")
 	private int countOfPosts;
 
 	@Builder

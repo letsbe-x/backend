@@ -25,9 +25,11 @@ import com.hulhul.server.web.service.PostService;
 import com.hulhul.server.web.service.TalkService;
 import com.hulhul.server.web.service.UserService;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 
+@Api(tags = { "V2-Talk" })
 @RestController
 @RequestMapping("/api/v2/talk")
 public class V2TalkController {

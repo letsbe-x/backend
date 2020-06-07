@@ -1,6 +1,6 @@
 package com.hulhul.server.web.service;
 
-import java.util.List;
+import javax.security.sasl.AuthenticationException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,7 +10,6 @@ import com.hulhul.server.domain.post.Post;
 import com.hulhul.server.domain.post.PostRepo;
 import com.hulhul.server.domain.user.User;
 import com.hulhul.server.web.dto.PostRequestDto;
-import com.hulhul.server.web.dto.PostResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,12 +35,10 @@ public class PostService {
 	public Post updatePost(Long post_id, Long user_id, PostRequestDto postDto, Category category) {
 		Post post = postRepo.findById(postDto.getId()).get();
 		User originUser = post.getUser();
-
 		if (doMatchUser(originUser, user_id)) {
-			return null;
+			
 			// 권한 없음
 		}
-
 		post.setUpdate(category, post.getContents(), post.getAnonymous());
 
 		return post;

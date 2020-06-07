@@ -51,6 +51,8 @@ public class PostController {
 	@Transactional(readOnly = true) // 데이터의 변경이 없는 읽기 전용 메서드에 사용, 속성 컨텍스트를 플러시 하지 않으므로 약간의 성능 향상(읽기 전용에는 다 적용)
 	@GetMapping("{post_id}")
 	public ResponseEntity getPost(@PathVariable Long post_id) {
+		//TODO : PostStatus.PRIVATE 일경우 -> 작성자와 해결한 사람만 볼 수 있다.
+		
 		Post post = postService.getPost(post_id);
 
 		if (post != null) {
@@ -89,4 +91,5 @@ public class PostController {
 	public PostResponseDto getDto(Post post) {
 		return PostResponseDto.builder().post(post).build();
 	}
+	
 }

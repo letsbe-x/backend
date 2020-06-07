@@ -1,5 +1,8 @@
 package com.hulhul.server.domain.post;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,14 +21,18 @@ import com.hulhul.server.domain.category.Category;
 import com.hulhul.server.domain.time.TimeEntity;
 import com.hulhul.server.domain.user.User;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "Posts")
 public class Post extends TimeEntity {
