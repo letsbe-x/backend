@@ -2,6 +2,7 @@ package com.hulhul.server.web.controllerV2;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -49,10 +50,10 @@ public class V2UserController {
 
 	@ApiOperation(value = "로그인")
 	@PostMapping("/login")
-	public ResponseEntity login(@RequestParam String id, @RequestParam String password)
+	public ResponseEntity login(@RequestBody User inputUser)
 			throws NoSuchAlgorithmException {
 		try {
-			User user = userService.login(id, password);
+			User user = userService.login(inputUser.getEmail(), inputUser.getPassword());
 			String jwt = jwtTokenProvider.createToken(String.valueOf(user.getEmail()), user.getRoles());
 			return new ResponseEntity(jwt, HttpStatus.OK);
 		} catch (Exception e) {
@@ -62,9 +63,8 @@ public class V2UserController {
 
 	@ApiOperation(value = "회원가입")
 	@PostMapping("/signup")
-	public ResponseEntity<String> signup(@RequestParam String email, @RequestParam String password,
-			@RequestParam String nickname) throws NoSuchAlgorithmException {
-		User user = User.builder().email(email).nickname(nickname).password(password)
+	public ResponseEntity<String> signup(@RequestBody User inputUser) throws NoSuchAlgorithmException {
+		User user = User.builder().email(inputUser.getEmail()).nickname(inputUser.getNickname()).password(inputUser.getPassword())
 				.roles(Collections.singletonList("ROLE_USER")).build(); // 회원 가입 후 USER_ROLE 진행
 		Long id = userService.doJoin(user);
 		return new ResponseEntity<String>(Long.toString(id), HttpStatus.OK);
@@ -81,4 +81,35 @@ public class V2UserController {
 
 		return new ResponseEntity(user_id, HttpStatus.OK);
 	}
+	
+	@ApiOperation(value = "닉네임검색")
+	@GetMapping("/search/{nickname}")
+	public ResponseEntity<List<User>> searchUserByNickName(@PathVariable String nickname) {
+		List<User> users = userService.searchUserByNickName("%"+nickname+"%");
+		
+		return new ResponseEntity<List<User>>(users, HttpStatus.OK);
+	}
+	
+	@ApiOperation(value="이메일중복체크")
+	@GetMapping("/duplication/email/{email}")
+	public ResponseEntity<String> validateDuplicateEmail(@PathVariable String email){
+		userService.validateDuplicateEmail(email);
+		return new ResponseEntity<String>("Possible", HttpStatus.OK);
+	}
+	
+	@ApiOperation(value="닉네임중복체크")
+	@GetMapping("/duplication/nickname/{nickname}")
+	public ResponseEntity<String> validateDuplicateNickName(@PathVariable String nickname){
+		userService.validateDuplicateNickName(nickname);
+		return new ResponseEntity<String>("Possible", HttpStatus.OK);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
