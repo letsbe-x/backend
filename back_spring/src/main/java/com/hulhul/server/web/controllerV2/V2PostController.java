@@ -59,11 +59,7 @@ public class V2PostController {
 	@PostMapping("write")
 	public ResponseEntity savePost(@RequestBody PostRequestDto dto) {
 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String email = authentication.getName();
-		System.out.println(email);
-		User user = userService.findByEmail(email);
-		System.out.println(user);
+		User user = getUser();
 		Category category = categoryService.getCategory(dto.getCategory_id());
 
 		return ResponseEntity.ok(getDto(postService.writePost(dto, user, category)));
@@ -90,11 +86,7 @@ public class V2PostController {
 			return new ResponseEntity(HttpStatus.NOT_MODIFIED);
 			// 잘못된 요청
 		}
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String email = authentication.getName();
-		System.out.println(email);
-		User user = userService.findByEmail(email);
-		System.out.println(user);
+		User user = getUser();
 		Category category = categoryService.getCategory(dto.getCategory_id());
 
 		return ResponseEntity.ok(getDto(postService.updatePost(post_id, user.getId(), dto, category)));
@@ -109,14 +101,18 @@ public class V2PostController {
 			return new ResponseEntity(HttpStatus.NOT_MODIFIED);
 			// 잘못된 요청
 		}
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String email = authentication.getName();
-		User user = userService.findByEmail(email);
-
+		User user = getUser();
 		return ResponseEntity.ok(postService.deletePost(post_id, user.getId()));
 	}
 
 	public PostResponseDto getDto(Post post) {
 		return PostResponseDto.builder().post(post).build();
+	}
+
+	private User getUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String email = authentication.getName();
+		User user = userService.findByEmail(email);
+		return user;
 	}
 }

@@ -1,15 +1,13 @@
 package com.hulhul.server.web.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.Random;
+import java.util.Set;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import com.hulhul.server.domain.category.Category;
 import com.hulhul.server.domain.category.CategoryRepo;
@@ -29,31 +27,46 @@ public class CategoryService {
 	public List<Category> getCategoryList() {
 		return categoryRepo.findAll();
 	}
-	
+
 	public Category getCategory(Long category_id) {
-		return categoryRepo.findById(category_id).get(); 
+		return categoryRepo.findById(category_id).get();
 	}
-	
-	public List<Post> doRandomPickUp(int postSize, int maxSize){
-		//TODO : 랜덤 최대 20개
-		List<Post> result = new ArrayList<Post>();
-		
-		return result;
-	}
-	
-	public List<PostResponseDto> getPosts(Category category){
+
+	public List<PostResponseDto> getPosts(Category category) {
+		int postSize = category.getCountOfPosts();
+
 		List<Post> posts = category.getPosts();
 		List<PostResponseDto> result = new ArrayList<PostResponseDto>();
-		
-		for(Post post : posts) {
+		Set<Integer> pickRandomSet = randomPick(postSize);
+
+		for (Integer idx : pickRandomSet) {
+			Post post = posts.get(idx);
 			result.add(PostResponseDto.builder().post(post).build());
 		}
-		
+
 //		List<PostResponseDto> result = posts.stream()
 //                .map(post -> PostResponseDto.builder().post(post).build())
 //                .collect(Collectors.toList());
-		
+
 		return result;
 	}
-	
+
+	// 랜덤 최대 12개
+	final static int RANDOM_MAX_SIZE = 12;
+
+	public Set<Integer> randomPick(int size) {
+		Set<Integer> pickRandomSet = new HashSet<Integer>();
+
+		// 랜덤 시드
+		long seed = System.currentTimeMillis();
+		Random rand = new Random(seed);
+
+		int requiredSize = (size < RANDOM_MAX_SIZE) ? size : RANDOM_MAX_SIZE;
+
+		// 12개
+		while (pickRandomSet.size() != requiredSize) {
+			pickRandomSet.add(rand.nextInt(size));
+		}
+		return pickRandomSet;
+	}
 }
