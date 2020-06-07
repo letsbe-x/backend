@@ -24,15 +24,23 @@ public class UserService {
 	 */
 	@Transactional // 변경
 	public Long doJoin(User user) throws NoSuchAlgorithmException {
-		validateDuplicateUser(user); // 중복 유저 검증
-		System.out.println(user.getPassword());
+		validateDuplicateEmail(user.getEmail());
+		validateDuplicateNickName(user.getNickname()); // 중복 유저 검증		
+//		System.out.println(user.getPassword());
 		user.setPassword(encryptPassword(user.getPassword()));
 		userRepo.save(user);
 		return user.getId();
 	}
+	
+	public void validateDuplicateEmail(String email) {
+		User findUser = userRepo.findByEmail(email).orElse(new User());
+		if (findUser.getEmail() != null) {
+			throw new IllegalStateException("이미 존재하는 이메일입니다.");
+		}
+	}
 
-	private void validateDuplicateUser(User user) {
-		List<User> findUsers = userRepo.findByNickname(user.getNickname());
+	public void validateDuplicateNickName(String nickname) {
+		List<User> findUsers = userRepo.findByNickname(nickname);
 		if (!findUsers.isEmpty()) {
 			throw new IllegalStateException("이미 존재하는 닉네임입니다.");
 		}
@@ -86,6 +94,10 @@ public class UserService {
 	
 	public User findByEmail(String email) {
 		return userRepo.findByEmail(email).get();
+	}
+	
+	public List<User> searchUserByNickName(String nickname){
+		return userRepo.findByNicknameLike(nickname);
 	}
 
 	@Transactional

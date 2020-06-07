@@ -71,10 +71,10 @@ public class User extends TimeEntity implements UserDetails {
 	}
 
 //	@Builder
-//	public User(String email, String password) {
-//		this.email = email;
-//		this.password = password;
-//	}
+	public User(String email, String password) {
+		this.email = email;
+		this.password = password;
+	}
 
 //	public void changePost(Post post) {
 ////		this.posts.add(post);

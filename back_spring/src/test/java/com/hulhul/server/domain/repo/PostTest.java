@@ -79,12 +79,12 @@ public class PostTest {
 		Long id = postRepo.save(post).getId();
 
 		// when
-		User checkUser = userRepo.findByEmail(email);
+//		User checkUser = userRepo.findByEmail(email);
 		Category checkCategory = categoryRepo.findByName(categoryName);
 		Post checkPost = postRepo.findById(id).get();
 
 		// then
-		assertThat(checkUser.getEmail(), is(email));
+//		assertThat(checkUser.getEmail(), is(email));
 		assertThat(checkCategory.getName(), is(categoryName));
 		assertThat(checkPost.getTitle(), is(title));
 	}
