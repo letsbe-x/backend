@@ -23,8 +23,8 @@ import com.hulhul.server.web.util.HttpSessionUtils;
 
 import lombok.RequiredArgsConstructor;
 
-@RestController
-@RequestMapping("/api/v1/user")
+//@RestController
+//@RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class UserController {

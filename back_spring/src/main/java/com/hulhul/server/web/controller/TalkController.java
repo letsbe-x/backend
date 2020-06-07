@@ -25,8 +25,8 @@ import com.hulhul.server.web.service.PostService;
 import com.hulhul.server.web.service.TalkService;
 import com.hulhul.server.web.util.HttpSessionUtils;
 
-@RestController
-@RequestMapping("/api/v1/talk")
+//@RestController
+//@RequestMapping("/api/v1/talk")
 public class TalkController {
 
 	// TODO : Socket 또는 Webflux
@@ -56,7 +56,7 @@ public class TalkController {
 
 		User user = HttpSessionUtils.getUserFormSession(session);
 
-		return ResponseEntity.ok(talkService.writeTalk(dto, user));
+		return ResponseEntity.ok(talkService.writeTalk(dto, null, user));
 	}
 
 	// R

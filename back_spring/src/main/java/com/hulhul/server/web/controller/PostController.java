@@ -24,8 +24,8 @@ import com.hulhul.server.web.service.CategoryService;
 import com.hulhul.server.web.service.PostService;
 import com.hulhul.server.web.util.HttpSessionUtils;
 
-@RestController
-@RequestMapping("/api/v1/post")
+//@RestController
+//@RequestMapping("/api/v1/post")
 public class PostController {
 
 	@Autowired
