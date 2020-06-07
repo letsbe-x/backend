@@ -1,8 +1,5 @@
 package com.hulhul.server.domain.post;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,15 +11,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hulhul.server.domain.anonymous.AnonymousStatus;
 import com.hulhul.server.domain.category.Category;
-import com.hulhul.server.domain.talk.Talk;
 import com.hulhul.server.domain.time.TimeEntity;
 import com.hulhul.server.domain.user.User;
 
@@ -47,6 +39,10 @@ public class Post extends TimeEntity {
 	@ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "u_id", nullable = false, updatable = false) // 단방향
 	private User user; // 작성자
+
+	@ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+	@JoinColumn(name = "sovled_id") // 단방향
+	private User solver; // 작성자
 
 	// 1 : N post <- Conversation
 	// 순서 있어야함
@@ -92,6 +88,10 @@ public class Post extends TimeEntity {
 		this.contents = contents;
 		this.anonymous = anonymous;
 		return this;
+	}
+
+	public void setSolvedUser(User solver) {
+		this.solver = solver;
 	}
 
 	// Test용 Lombok toString은 양방향 매핑때문에 무한루프 늪에 빠지더라..
