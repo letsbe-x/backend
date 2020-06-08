@@ -28,32 +28,32 @@ public class PostResponseDto {
 	private String title;
 	private String contents;
 	private String nickName;
-	private List<TalkResponseDto> talks; 
+	private List<TalkResponseDto> talks;
+	private Long category_id;
 
 	@Enumerated(EnumType.STRING)
 	private PostStatus status; // POST 상태
 
 	@Enumerated(EnumType.STRING)
 	private AnonymousStatus anonymous; // 유저 익명 상태
-	
+
 	private LocalDateTime createdAt;
-	
+
 	private LocalDateTime modifiedAt;
 
-	
 	// TODO : 닉네임 변경 - 비공개인경우
 	@Builder
 	public PostResponseDto(Post post) {
 		this.id = post.getId();
 		this.title = post.getTitle();
+		this.category_id = post.getCategory().getId();
 		this.contents = post.getContents();
 		this.status = post.getStatus();
 		this.anonymous = post.getAnonymous();
 		this.nickName = doAnonymous(post);
 		this.createdAt = post.getCreatedAt();
 		this.modifiedAt = post.getModifiedAt();
-		System.out.println("first");
-	}	
+	}
 
 	// TODO : HASHSET RECODE
 	public String doAnonymous(Post post) {

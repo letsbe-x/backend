@@ -47,7 +47,6 @@ public class CategoryService {
 		for (Integer idx : pickRandomSet) {
 			Post post = posts.get(idx);
 			List<TalkResponseDto> talks = talkService.getTalkResponseDtoList(post); 
-			System.out.println("sival : " +talks);
 			PostResponseDto temp = PostResponseDto.builder().post(post).build();
 			temp.setTalks(talks);
 			

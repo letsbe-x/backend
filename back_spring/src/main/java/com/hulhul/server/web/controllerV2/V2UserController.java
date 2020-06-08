@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hulhul.server.domain.post.PostStatus;
 import com.hulhul.server.domain.user.User;
 import com.hulhul.server.domain.user.UserRepo;
+import com.hulhul.server.web.dto.PagenationDto;
 import com.hulhul.server.web.dto.PostResponseDto;
 import com.hulhul.server.web.security.JwtTokenProvider;
 import com.hulhul.server.web.service.PostService;
@@ -118,13 +119,30 @@ public class V2UserController {
 
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
+	@GetMapping("/mytree/totalSize")
+	public ResponseEntity getMyTreeTotalSize(@RequestParam Integer pageNum, @RequestParam Integer requiredSize) {
+		User solver = getUser();
+
+		Integer result = postService.getUserPostSize(solver, pageNum, requiredSize, PostStatus.SOLVED);
+
+		return new ResponseEntity(result, HttpStatus.OK);
+	}
+
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@GetMapping("/mytree")
 	public ResponseEntity getMyTree(@RequestParam Integer pageNum, @RequestParam Integer requiredSize) {
 		User solver = getUser();
 
 		List<PostResponseDto> posts = postService.getUserPost(solver, pageNum, requiredSize, PostStatus.SOLVED);
 
-		return new ResponseEntity(posts, HttpStatus.OK);
+		PagenationDto page = new PagenationDto();
+		Integer totalPage = postService.getUserPostSize(solver, pageNum, requiredSize, PostStatus.SOLVED);
+		page.setPage(pageNum);
+		page.setRequiredSize(requiredSize);
+		page.setPost(posts);
+		page.setTotalPage(totalPage);
+		return new ResponseEntity(page, HttpStatus.OK);
 	}
 
 //	@PageableDefault(sort = { "id" }, direction = Direction.DESC, size = 2) Pageable pageable

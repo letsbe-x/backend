@@ -16,6 +16,7 @@ import com.hulhul.server.domain.post.PostStatus;
 import com.hulhul.server.domain.user.User;
 import com.hulhul.server.web.dto.PostRequestDto;
 import com.hulhul.server.web.dto.PostResponseDto;
+import com.hulhul.server.web.dto.TalkResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +26,8 @@ import lombok.RequiredArgsConstructor;
 public class PostService {
 
 	private final PostRepo postRepo;
-
+	
+	private final TalkService talkService;
 	public Post getPost(Long post_id) {
 		return postRepo.findById(post_id).get();
 	}
@@ -35,8 +37,16 @@ public class PostService {
 		List<Post> posts = postRepo.findPostAnswerList(solver.getId(), status.toString(), pageRequest);
 		List<PostResponseDto> result = new ArrayList<PostResponseDto>();
 		for (Post post : posts) {
-			result.add(getDto(post));
+			PostResponseDto dto = getDto(post);
+			dto.setTalks(talkService.getTalkResponseDtoList(post));
+			result.add(dto);
 		}
+		return result;
+	}
+
+	public Integer getUserPostSize(User solver, Integer pageNum, Integer pageSize, PostStatus status) {
+		Integer totalSize = postRepo.findPostAnswerListSize(solver.getId(), status.toString());
+		Integer result = ((totalSize - 1) / pageSize) + 1;
 		return result;
 	}
 
@@ -52,7 +62,7 @@ public class PostService {
 		Post post = postRepo.findById(postDto.getId()).get();
 		User originUser = post.getUser();
 		if (doMatchUser(originUser, user_id)) {
-
+			return null;
 			// 권한 없음
 		}
 		post.setUpdate(category, post.getContents(), post.getAnonymous());
