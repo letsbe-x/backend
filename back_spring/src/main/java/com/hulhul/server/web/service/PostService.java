@@ -31,8 +31,15 @@ public class PostService {
 	public Post getPost(Long post_id) {
 		return postRepo.findById(post_id).get();
 	}
-
-	public List<PostResponseDto> getUserPost(User solver, Integer pageNum, Integer pageSize, PostStatus status) {
+	/**
+	 * 내가 해결한 고민들
+	 * @param solver
+	 * @param pageNum
+	 * @param pageSize
+	 * @param status
+	 * @return
+	 */
+	public List<PostResponseDto> getUserSolvedPost(User solver, Integer pageNum, Integer pageSize, PostStatus status) {
 		PageRequest pageRequest = PageRequest.of(pageNum - 1, pageSize, Sort.by("modified_at").descending());
 		List<Post> posts = postRepo.findPostAnswerList(solver.getId(), status.toString(), pageRequest);
 		List<PostResponseDto> result = new ArrayList<PostResponseDto>();
@@ -44,8 +51,34 @@ public class PostService {
 		return result;
 	}
 
-	public Integer getUserPostSize(User solver, Integer pageNum, Integer pageSize, PostStatus status) {
+	public Integer getUserSolvedPostSize(User solver, Integer pageNum, Integer pageSize, PostStatus status) {
 		Integer totalSize = postRepo.findPostAnswerListSize(solver.getId(), status.toString());
+		Integer result = ((totalSize - 1) / pageSize) + 1;
+		return result;
+	}
+	
+	/**
+	 * 나의 고민모음 
+	 * @param solver
+	 * @param pageNum
+	 * @param pageSize
+	 * @param status
+	 * @return
+	 */
+	public List<PostResponseDto> getUserPost(User user, Integer pageNum, Integer pageSize) {
+		PageRequest pageRequest = PageRequest.of(pageNum - 1, pageSize, Sort.by("modified_at").descending());
+		List<Post> posts = postRepo.findByUser_Id(user.getId(), pageRequest);
+		List<PostResponseDto> result = new ArrayList<PostResponseDto>();
+		for (Post post : posts) {
+			PostResponseDto dto = getDto(post);
+			dto.setTalks(talkService.getTalkResponseDtoList(post));
+			result.add(dto);
+		}
+		return result;
+	}
+
+	public Integer getUserPostSize(User user, Integer pageNum, Integer pageSize) {
+		Integer totalSize = postRepo.findByUser_IdSize(user.getId());
 		Integer result = ((totalSize - 1) / pageSize) + 1;
 		return result;
 	}

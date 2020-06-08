@@ -24,5 +24,19 @@ public interface PostRepo extends JpaRepository<Post, Long> {
 
 	@Query(value = "select count(*) from posts	where sovled_id = ?1 and status = ?2", nativeQuery = true)
 	Integer findPostAnswerListSize(Long sovled_id, String status);
+	
+	/**
+	 * u_id
+	 * @param sovled_id
+	 * @param status
+	 * @param pageable
+	 * @return
+	 */
+	@Query(value = "select * from posts	where u_id = ?1", countQuery = "select count(*) from posts	where u_id = ?1", nativeQuery = true)
+	List<Post> findByUser_Id(Long sovled_id, Pageable pageable);
+	
+	@Query(value = "select count(*) from posts	where u_id = ?1", nativeQuery = true)
+	Integer findByUser_IdSize(Long u_id);
+
 
 }

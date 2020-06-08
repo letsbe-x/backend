@@ -57,8 +57,8 @@ public class Talk extends TimeEntity {
 	@Enumerated(EnumType.STRING)
 	private AnonymousStatus anonymous; // 유저 익명 상태
 
-	protected Post getPost() {
-		return post;
+	public Post getPost() {
+		return this.post;
 	}
 
 	@Builder

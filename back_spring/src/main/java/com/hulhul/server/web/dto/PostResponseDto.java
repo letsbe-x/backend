@@ -25,6 +25,7 @@ import lombok.Setter;
 //@NoArgsConstructor
 public class PostResponseDto {
 	private Long id;
+	private Long u_id;
 	private String title;
 	private String contents;
 	private String nickName;
@@ -45,6 +46,7 @@ public class PostResponseDto {
 	@Builder
 	public PostResponseDto(Post post) {
 		this.id = post.getId();
+		this.u_id = post.getUser().getId();
 		this.title = post.getTitle();
 		this.category_id = post.getCategory().getId();
 		this.contents = post.getContents();
@@ -58,8 +60,10 @@ public class PostResponseDto {
 	// TODO : HASHSET RECODE
 	public String doAnonymous(Post post) {
 		// post_id / user_id
-		if (post.getAnonymous() == anonymous)
+		if (post.getAnonymous() == anonymous) {
+			this.u_id = -1L;
 			return "익명";
+		}
 		else
 			return post.getUser().getNickname();
 	}

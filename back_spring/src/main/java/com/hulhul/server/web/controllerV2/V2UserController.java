@@ -65,7 +65,7 @@ public class V2UserController {
 	public ResponseEntity login(@RequestBody User inputUser) throws NoSuchAlgorithmException {
 		try {
 			User user = userService.login(inputUser.getEmail(), inputUser.getPassword());
-			String jwt = jwtTokenProvider.createToken(String.valueOf(user.getNickname()), user.getRoles());
+			String jwt = jwtTokenProvider.createToken(user);
 			return new ResponseEntity(jwt, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity(e.getStackTrace(), HttpStatus.EXPECTATION_FAILED);
@@ -123,7 +123,7 @@ public class V2UserController {
 	public ResponseEntity getMyTreeTotalSize(@RequestParam Integer pageNum, @RequestParam Integer requiredSize) {
 		User solver = getUser();
 
-		Integer result = postService.getUserPostSize(solver, pageNum, requiredSize, PostStatus.SOLVED);
+		Integer result = postService.getUserSolvedPostSize(solver, pageNum, requiredSize, PostStatus.SOLVED);
 
 		return new ResponseEntity(result, HttpStatus.OK);
 	}
@@ -134,10 +134,27 @@ public class V2UserController {
 	public ResponseEntity getMyTree(@RequestParam Integer pageNum, @RequestParam Integer requiredSize) {
 		User solver = getUser();
 
-		List<PostResponseDto> posts = postService.getUserPost(solver, pageNum, requiredSize, PostStatus.SOLVED);
+		List<PostResponseDto> posts = postService.getUserSolvedPost(solver, pageNum, requiredSize, PostStatus.SOLVED);
 
 		PagenationDto page = new PagenationDto();
-		Integer totalPage = postService.getUserPostSize(solver, pageNum, requiredSize, PostStatus.SOLVED);
+		Integer totalPage = postService.getUserSolvedPostSize(solver, pageNum, requiredSize, PostStatus.SOLVED);
+		page.setPage(pageNum);
+		page.setRequiredSize(requiredSize);
+		page.setPost(posts);
+		page.setTotalPage(totalPage);
+		return new ResponseEntity(page, HttpStatus.OK);
+	}
+
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
+	@GetMapping("/myPost")
+	public ResponseEntity getMyPosts(@RequestParam Integer pageNum, @RequestParam Integer requiredSize) {
+		User user = getUser();
+
+		List<PostResponseDto> posts = postService.getUserPost(user, pageNum, requiredSize);
+
+		PagenationDto page = new PagenationDto();
+		Integer totalPage = postService.getUserPostSize(user, pageNum, requiredSize);
 		page.setPage(pageNum);
 		page.setRequiredSize(requiredSize);
 		page.setPost(posts);

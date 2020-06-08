@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
+import com.hulhul.server.domain.user.User;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -39,9 +41,10 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
 	}
 
 	// Jwt 토큰 생성
-	public String createToken(String userPk, List<String> roles) {
-		Claims claims = Jwts.claims().setSubject(userPk);
-		claims.put("roles", roles);
+	public String createToken(User user) {
+		Claims claims = Jwts.claims().setSubject(user.getNickname());
+		claims.put("u_id",user.getId());
+		claims.put("roles", user.getRoles());
 		Date now = new Date();
 		return Jwts.builder().setClaims(claims) // 데이터
 				.setIssuedAt(now) // 토큰 발행일자
