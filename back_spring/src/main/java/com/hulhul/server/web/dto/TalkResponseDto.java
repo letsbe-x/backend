@@ -54,7 +54,7 @@ public class TalkResponseDto {
 	// TODO : HASHSET RECODE
 	public String doAnonymous(Talk talk) {
 		// talk_id / user_id
-		if (talk.getAnonymous() == anonymous) {
+		if (talk.getAnonymous() == AnonymousStatus.Anonymous) {
 			this.u_id = -1L;
 			return AnonymousNickNameUtils.getNick(talk.getUser().getId(), talk.getPost().getId());
 		} else
