@@ -1,5 +1,7 @@
 package com.hulhul.server.web.dto;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
@@ -12,7 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class PostResponseDto extends TimeEntity {
+public class PostResponseDto {
 	private Long id;
 	private String title;
 	private String contents;
@@ -23,7 +25,12 @@ public class PostResponseDto extends TimeEntity {
 
 	@Enumerated(EnumType.STRING)
 	private AnonymousStatus anonymous; // 유저 익명 상태
+	
+	private LocalDateTime createdAt;
+	
+	private LocalDateTime modifiedAt;
 
+	
 	// TODO : 닉네임 변경 - 비공개인경우
 	@Builder
 	public PostResponseDto(Post post) {
@@ -33,6 +40,8 @@ public class PostResponseDto extends TimeEntity {
 		this.status = post.getStatus();
 		this.anonymous = post.getAnonymous();
 		this.nickName = doAnonymous(post);
+		this.createdAt = post.getCreatedAt();
+		this.modifiedAt = post.getModifiedAt();
 	}
 
 	// TODO : HASHSET RECODE
