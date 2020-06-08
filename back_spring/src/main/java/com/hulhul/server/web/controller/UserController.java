@@ -45,7 +45,7 @@ public class UserController {
 
 	@PostMapping("/login")
 	public ResponseEntity<User> login(@RequestBody User user, HttpSession session) throws NoSuchAlgorithmException {
-		User userInDB = userService.login(user.getEmail(), user.getPassword());
+		User userInDB = userService.login(user.getNickname(), user.getPassword());
 		session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
 
 		return new ResponseEntity<User>(userInDB, HttpStatus.OK) ;
