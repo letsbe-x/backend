@@ -31,12 +31,10 @@ public class TalkService {
 	
 	public List<TalkResponseDto> getTalkResponseDtoList(Post post){
 		List<Talk> temp = talkRepo.findByPost(post);
-		System.out.println(temp);
 		List<TalkResponseDto> result = new ArrayList<>();
 		for( Talk talk : temp) {
 			result.add(TalkResponseDto.builder().talk(talk).build());
 		}
-		System.out.println("talkResponseDtoList : "+result);
 		return result;
 	}
 

@@ -50,7 +50,7 @@ public class V2TalkController {
 	public ResponseEntity getTalkList(@PathVariable Long post_id) {
 		Post post = postService.getPost(post_id);
 		if (post != null) {
-			return ResponseEntity.ok(talkService.getTalkList(post));
+			return ResponseEntity.ok(talkService.getTalkResponseDtoList(post));
 		}
 		return new ResponseEntity(HttpStatus.NOT_FOUND);
 	}

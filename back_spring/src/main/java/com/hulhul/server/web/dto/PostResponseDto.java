@@ -11,6 +11,7 @@ import com.hulhul.server.domain.post.Post;
 import com.hulhul.server.domain.post.PostStatus;
 import com.hulhul.server.domain.talk.Talk;
 import com.hulhul.server.domain.time.TimeEntity;
+import com.hulhul.server.web.util.AnonymousNickNameUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -62,7 +63,7 @@ public class PostResponseDto {
 		// post_id / user_id
 		if (post.getAnonymous() == anonymous) {
 			this.u_id = -1L;
-			return "익명";
+			return AnonymousNickNameUtils.getNick(post.getUser().getId(), post.getId());
 		}
 		else
 			return post.getUser().getNickname();
