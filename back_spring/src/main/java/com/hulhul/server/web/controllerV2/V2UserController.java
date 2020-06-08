@@ -2,7 +2,9 @@ package com.hulhul.server.web.controllerV2;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hulhul.server.domain.post.Post;
 import com.hulhul.server.domain.post.PostStatus;
 import com.hulhul.server.domain.user.User;
 import com.hulhul.server.domain.user.UserRepo;
@@ -33,6 +36,7 @@ import com.hulhul.server.web.dto.PostResponseDto;
 import com.hulhul.server.web.security.JwtTokenProvider;
 import com.hulhul.server.web.service.PostService;
 import com.hulhul.server.web.service.UserService;
+import com.hulhul.server.web.util.AnonymousNickNameUtils;
 import com.hulhul.server.web.util.HttpSessionUtils;
 
 import io.swagger.annotations.Api;
@@ -128,6 +132,7 @@ public class V2UserController {
 		return new ResponseEntity(result, HttpStatus.OK);
 	}
 
+	@ApiOperation(value = "닉네임의 해결나무..")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@GetMapping("/mytree")
@@ -145,8 +150,10 @@ public class V2UserController {
 		return new ResponseEntity(page, HttpStatus.OK);
 	}
 
+	@ApiOperation(value = "닉네임의 해결나무..")
 	@GetMapping("{nickname}/mytree")
-	public ResponseEntity getYourTree(@PathVariable String nickname, @RequestParam Integer pageNum, @RequestParam Integer requiredSize) {
+	public ResponseEntity getYourTree(@PathVariable String nickname, @RequestParam Integer pageNum,
+			@RequestParam Integer requiredSize) {
 		User users = userService.findByNickname(nickname);
 		List<PostResponseDto> posts = postService.getUserSolvedPost(users, pageNum, requiredSize, PostStatus.SOLVED);
 
@@ -159,6 +166,7 @@ public class V2UserController {
 		return new ResponseEntity(page, HttpStatus.OK);
 	}
 
+	@ApiOperation(value = "나의 고민들..")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@GetMapping("/myPost")
@@ -174,6 +182,21 @@ public class V2UserController {
 		page.setPost(posts);
 		page.setTotalPage(totalPage);
 		return new ResponseEntity(page, HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "그방의 닉네임 호출")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
+	@GetMapping("/anonymous")
+	public ResponseEntity getAnonymousNickname(@RequestParam Long post_id) {
+		User user = getUser();
+		Map<String, Object> results = new HashMap<String, Object>();
+		//익명 닉네임
+		String nickname = AnonymousNickNameUtils.getNick(user.getId(), post_id);
+		results.put("nickname", nickname);
+		Post post = postService.getPost(post_id);
+		results.put("host", user.getId() == post.getUser().getId());
+		return new ResponseEntity(results, HttpStatus.OK);
 	}
 
 //	@PageableDefault(sort = { "id" }, direction = Direction.DESC, size = 2) Pageable pageable

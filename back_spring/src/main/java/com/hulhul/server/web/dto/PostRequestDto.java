@@ -35,6 +35,10 @@ public class PostRequestDto {
 		this.status = PostStatus.PROCEED;
 		this.anonymous = anonymous;
 		this.category_id = category_id;
+
+		if (this.anonymous == null) {
+			this.anonymous = AnonymousStatus.RealName;
+		}
 	}
 
 	public Post toEntity(User user, Category category) {
