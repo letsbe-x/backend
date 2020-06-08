@@ -6,8 +6,14 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.hibernate.annotations.Parameter;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +25,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hulhul.server.domain.post.PostStatus;
 import com.hulhul.server.domain.user.User;
 import com.hulhul.server.domain.user.UserRepo;
+import com.hulhul.server.web.dto.PostResponseDto;
 import com.hulhul.server.web.security.JwtTokenProvider;
+import com.hulhul.server.web.service.PostService;
 import com.hulhul.server.web.service.UserService;
 import com.hulhul.server.web.util.HttpSessionUtils;
 
@@ -44,6 +53,8 @@ public class V2UserController {
 	private final UserRepo userRepo;
 
 	private final UserService userService;
+
+	private final PostService postService;
 
 	// JWT 토큰 발급
 	private final JwtTokenProvider jwtTokenProvider;
@@ -103,6 +114,26 @@ public class V2UserController {
 	public ResponseEntity<String> validateDuplicateNickName(@PathVariable String nickname) {
 		userService.validateDuplicateNickName(nickname);
 		return new ResponseEntity<String>("Possible", HttpStatus.OK);
+	}
+
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
+	@GetMapping("/mytree")
+	public ResponseEntity getMyTree(@RequestParam Integer pageNum, @RequestParam Integer requiredSize) {
+		User solver = getUser();
+
+		List<PostResponseDto> posts = postService.getUserPost(solver, pageNum, requiredSize, PostStatus.SOLVED);
+
+		return new ResponseEntity(posts, HttpStatus.OK);
+	}
+
+//	@PageableDefault(sort = { "id" }, direction = Direction.DESC, size = 2) Pageable pageable
+
+	private User getUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String nickName = authentication.getName();
+		User user = userService.findByNickname(nickName);
+		return user;
 	}
 
 }

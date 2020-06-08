@@ -1,15 +1,21 @@
 package com.hulhul.server.web.service;
 
-import javax.security.sasl.AuthenticationException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.hulhul.server.domain.category.Category;
 import com.hulhul.server.domain.post.Post;
 import com.hulhul.server.domain.post.PostRepo;
+import com.hulhul.server.domain.post.PostStatus;
 import com.hulhul.server.domain.user.User;
 import com.hulhul.server.web.dto.PostRequestDto;
+import com.hulhul.server.web.dto.PostResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +30,16 @@ public class PostService {
 		return postRepo.findById(post_id).get();
 	}
 
+	public List<PostResponseDto> getUserPost(User solver, Integer pageNum, Integer pageSize, PostStatus status) {
+		PageRequest pageRequest = PageRequest.of(pageNum - 1, pageSize, Sort.by("modified_at").descending());
+		List<Post> posts = postRepo.findPostAnswerList(solver.getId(), status.toString(), pageRequest);
+		List<PostResponseDto> result = new ArrayList<PostResponseDto>();
+		for (Post post : posts) {
+			result.add(getDto(post));
+		}
+		return result;
+	}
+
 	@Transactional
 	public Post writePost(PostRequestDto postDto, User user, Category category) {
 		Post post = postDto.toEntity(user, category);
@@ -36,7 +52,7 @@ public class PostService {
 		Post post = postRepo.findById(postDto.getId()).get();
 		User originUser = post.getUser();
 		if (doMatchUser(originUser, user_id)) {
-			
+
 			// 권한 없음
 		}
 		post.setUpdate(category, post.getContents(), post.getAnonymous());
@@ -60,6 +76,10 @@ public class PostService {
 
 	public boolean doMatchUser(User user, Long user_id) {
 		return !user.getId().equals(user_id);
+	}
+
+	public PostResponseDto getDto(Post post) {
+		return PostResponseDto.builder().post(post).build();
 	}
 
 }
