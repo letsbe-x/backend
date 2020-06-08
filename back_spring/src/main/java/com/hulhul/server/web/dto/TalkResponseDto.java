@@ -11,10 +11,18 @@ import com.hulhul.server.domain.post.PostStatus;
 import com.hulhul.server.domain.talk.Talk;
 import com.hulhul.server.domain.time.TimeEntity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class TalkResponseDto {
 	private Long id;
 	private String contents;

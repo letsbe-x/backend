@@ -12,7 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.hulhul.server.domain.category.Category;
 import com.hulhul.server.domain.category.CategoryRepo;
 import com.hulhul.server.domain.post.Post;
+import com.hulhul.server.domain.talk.Talk;
+import com.hulhul.server.domain.talk.TalkRepo;
 import com.hulhul.server.web.dto.PostResponseDto;
+import com.hulhul.server.web.dto.TalkResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +26,8 @@ public class CategoryService {
 
 	// 객체를 필드주입이 아닌 생성자주입으로 넣는것이 좋다.
 	private final CategoryRepo categoryRepo;
+	
+	private final TalkService talkService;
 
 	public List<Category> getCategoryList() {
 		return categoryRepo.findAll();
@@ -41,8 +46,15 @@ public class CategoryService {
 
 		for (Integer idx : pickRandomSet) {
 			Post post = posts.get(idx);
-			result.add(PostResponseDto.builder().post(post).build());
+			List<TalkResponseDto> talks = talkService.getTalkResponseDtoList(post); 
+			System.out.println("sival : " +talks);
+			PostResponseDto temp = PostResponseDto.builder().post(post).build();
+			temp.setTalks(talks);
+			
+			result.add(temp);
 		}
+		
+		System.out.println(result);
 
 //		List<PostResponseDto> result = posts.stream()
 //                .map(post -> PostResponseDto.builder().post(post).build())
