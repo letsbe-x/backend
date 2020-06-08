@@ -32,6 +32,6 @@ public class TalkRequestDto {
 	}
 
 	public Talk toEntity(Post post, User user) {
-		return Talk.builder().contents(contents).post(post).anonymous(AnonymousStatus.Anonymous).user(user).build();
+		return Talk.builder().contents(contents).post(post).anonymous(anonymous).user(user).build();
 	}
 }

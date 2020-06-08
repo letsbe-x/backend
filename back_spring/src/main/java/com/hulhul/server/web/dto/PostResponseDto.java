@@ -61,7 +61,7 @@ public class PostResponseDto {
 	// TODO : HASHSET RECODE
 	public String doAnonymous(Post post) {
 		// post_id / user_id
-		if (post.getAnonymous() == anonymous) {
+		if (post.getAnonymous() == AnonymousStatus.Anonymous) {
 			this.u_id = -1L;
 			return AnonymousNickNameUtils.getNick(post.getUser().getId(), post.getId());
 		}

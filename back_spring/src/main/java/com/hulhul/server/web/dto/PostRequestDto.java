@@ -39,6 +39,6 @@ public class PostRequestDto {
 
 	public Post toEntity(User user, Category category) {
 		return Post.builder().title(title).contents(contents).category(category).status(PostStatus.PROCEED)
-				.anonymous(AnonymousStatus.Anonymous).user(user).build();
+				.anonymous(this.anonymous).user(user).build();
 	}
 }
