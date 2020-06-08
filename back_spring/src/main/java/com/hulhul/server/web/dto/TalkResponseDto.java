@@ -27,6 +27,7 @@ import lombok.ToString;
 @ToString
 public class TalkResponseDto {
 	private Long u_id;
+	private Long c_id;
 	private String contents;
 	private String nickName;
 
@@ -42,6 +43,7 @@ public class TalkResponseDto {
 	@Builder
 	public TalkResponseDto(Talk talk) {
 		this.u_id = talk.getUser().getId();
+		this.c_id = talk.getId();
 		this.contents = talk.getContents();
 		this.anonymous = talk.getAnonymous();
 		this.nickName = doAnonymous(talk);
@@ -50,8 +52,6 @@ public class TalkResponseDto {
 		this.isHost = (talk.getUser().getId() == talk.getPost().getUser().getId()) ? true : false;
 	}
 
-	// TODO : 닉네임 변경 - 비공개인경우
-	// TODO : HASHSET RECODE
 	public String doAnonymous(Talk talk) {
 		// talk_id / user_id
 		if (talk.getAnonymous() == AnonymousStatus.Anonymous) {
@@ -60,12 +60,5 @@ public class TalkResponseDto {
 		} else
 			return talk.getUser().getNickname();
 	}
-
-//	public String HashNickName(Talk talk) {
-//		Long p = talk.getUser().getId();
-//		Long q = talk.getPost().getId();
-//		
-//		
-//	}
 
 }
