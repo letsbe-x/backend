@@ -145,6 +145,20 @@ public class V2UserController {
 		return new ResponseEntity(page, HttpStatus.OK);
 	}
 
+	@GetMapping("{nickname}/mytree")
+	public ResponseEntity getYourTree(@PathVariable String nickname, @RequestParam Integer pageNum, @RequestParam Integer requiredSize) {
+		User users = userService.findByNickname(nickname);
+		List<PostResponseDto> posts = postService.getUserSolvedPost(users, pageNum, requiredSize, PostStatus.SOLVED);
+
+		PagenationDto page = new PagenationDto();
+		Integer totalPage = postService.getUserSolvedPostSize(users, pageNum, requiredSize, PostStatus.SOLVED);
+		page.setPage(pageNum);
+		page.setRequiredSize(requiredSize);
+		page.setPost(posts);
+		page.setTotalPage(totalPage);
+		return new ResponseEntity(page, HttpStatus.OK);
+	}
+
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header") })
 	@GetMapping("/myPost")
