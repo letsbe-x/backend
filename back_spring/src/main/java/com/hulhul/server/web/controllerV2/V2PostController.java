@@ -42,14 +42,12 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin("*")
 public class V2PostController {
 
-	@Autowired
-	UserService userService;
+	
+	private final UserService userService;
 
-	@Autowired
-	PostService postService;
+	private final PostService postService;
 
-	@Autowired
-	CategoryService categoryService;
+	private final CategoryService categoryService;
 
 	private final JwtTokenProvider jwtTokenProvider;
 

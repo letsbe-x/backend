@@ -1,5 +1,6 @@
 package com.hulhul.server.web.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import com.hulhul.server.domain.talk.TalkRepo;
 import com.hulhul.server.domain.user.User;
 import com.hulhul.server.web.dto.PostRequestDto;
 import com.hulhul.server.web.dto.TalkRequestDto;
+import com.hulhul.server.web.dto.TalkResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +27,17 @@ public class TalkService {
 
 	public List<Talk> getTalkList(Post post) {
 		return talkRepo.findByPost(post);
+	}
+	
+	public List<TalkResponseDto> getTalkResponseDtoList(Post post){
+		List<Talk> temp = talkRepo.findByPost(post);
+		System.out.println(temp);
+		List<TalkResponseDto> result = new ArrayList<>();
+		for( Talk talk : temp) {
+			result.add(TalkResponseDto.builder().talk(talk).build());
+		}
+		System.out.println("talkResponseDtoList : "+result);
+		return result;
 	}
 
 	public Talk getTalk(Long talk_id) {
